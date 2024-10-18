@@ -1,0 +1,10 @@
+
+# Common ignores
+node_modules/
+.DS_Store
+.env
+*.log
+
+# Node.js
+npm-debug.log
+yarn-error.log"
