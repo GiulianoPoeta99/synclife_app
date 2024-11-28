@@ -15,17 +15,23 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "astro": "^4.16.7",
     "@astrojs/check": "^0.9.4",
-    "typescript": "^5.6.3",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.11.0",
     "@typescript-eslint/parser": "^8.11.0",
+    "astro": "^4.16.13",
+    "daisyui": "^4.12.14",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.6",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.2",
+    "astro-icon": "^1.1.4",
+    "tailwindcss": "^3.4.15"
   }
 }

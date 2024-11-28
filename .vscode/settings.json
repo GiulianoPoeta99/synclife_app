@@ -5,6 +5,7 @@
     "local",
     "workflow",
     "dependencies",
-    "framework"
+    "framework",
+    "base"
   ]
 }

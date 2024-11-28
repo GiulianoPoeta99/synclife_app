@@ -1,0 +1,24 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+   url: string;
+   label: string;
+   icon?: string;
+}
+
+const { url, label, icon } = Astro.props;
+---
+
+<li class="flex flex-col items-center">
+   <a
+      href={url}
+      class="block relative text-gray-800 hover:bg-[#D593D1] hover:text-white px-4 py-2 rounded-2xl transition-all duration-300 ease-in-out"
+   >
+      <Icon
+         name={icon}
+         class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out"
+      />
+   </a>
+   <span class="text-xs text-center mt-1">{label}</span>
+</li>
