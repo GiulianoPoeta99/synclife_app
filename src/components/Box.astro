@@ -1,20 +1,25 @@
 ---
 interface Props {
-   title: string;
+   title?: string;
 }
 
 const { title } = Astro.props;
 ---
 
-<i class="bx bx-send"></i>
 <div class="flex flex-col h-full w-full">
    <div
       class="bg-white border-2 rounded-3xl shadow-lg flex flex-col h-full w-full p-6"
    >
-      <div class="text-center text-3xl text-bold text-gray-800 my-4">
-         {title}
-      </div>
-      <hr class="border-gray-300 border-t-1 w-[95%] mx-auto" />
+      {
+         title && (
+            <>
+               <div class="text-center text-3xl text-bold text-gray-800 my-4">
+                  {title}
+               </div>
+               <hr class="border-gray-300 border-t-1 w-[95%] mx-auto" />
+            </>
+         )
+      }
       <div class="p-6">
          <slot />
       </div>
