@@ -6,6 +6,7 @@
     "workflow",
     "dependencies",
     "framework",
-    "base"
+    "base",
+    "users"
   ]
 }

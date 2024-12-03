@@ -21,10 +21,8 @@ const { title } = Astro.props;
 	</head>
 	<body class="bg-gray-200 p-6">
 		<div class="grid grid-cols-[auto,1fr] gap-6 h-[calc(100vh-4rem)]">
-			<!-- Navbar -->
 			<Navbar />
 
-			<!-- Main Content -->
 			<main>
 				<Box title={title}>
 					<slot />
@@ -33,9 +31,51 @@ const { title } = Astro.props;
 		</div>
 
 		<script>
-			if (!localStorage.getItem('session_token')) {
+			const sessionToken = localStorage.getItem('session_token');
+
+			async function validateSession() {
+				if (!sessionToken) {
+					redirectToLogin();
+					return;
+				}
+
+				const response = await fetch(
+					'http://localhost:8000/api/v1/check/validate-session',
+					{
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'session-token': sessionToken,
+						},
+					}
+				);
+
+				if (!response.ok) {
+					if (response.status === 401) {
+						console.warn('Sesión inválida o expirada');
+						localStorage.removeItem('session_token');
+						redirectToLogin();
+					} else {
+						console.error(
+							'Error al validar la sesión, código:',
+							response.status
+						);
+					}
+				} else {
+					const data = await response.json();
+					console.log('Sesión válida:', data);
+				}
+			}
+
+			function redirectToLogin() {
 				window.location.href = '/login';
 			}
+
+			// Validación inicial
+			validateSession();
+
+			// Validar la sesión cada 60 segundos
+			setInterval(validateSession, 60000);
 		</script>
 	</body>
 </html>
