@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/LayoutLogin.astro';
+import LoginForm from '../components/forms/user/LoginForm.svelte';
+---
+
+<Layout title="Register">
+   <div class="max-w-md mx-auto mt-8 text-gray-800">
+      <h1 class="text-4xl text-center mb-6">
+         Hi <span class="text-[#D593D1]">again</span>!
+      </h1>
+      <LoginForm client:load />
+      <div class="mt-32 text-center">
+         <p>
+            Don't have an account?
+            <a
+               href="/register"
+               class="text-[#D593D1] transition duration-300 ease-in-out hover:text-[#b76aaf] hover:underline"
+            >
+               Register here
+            </a>
+         </p>
+      </div>
+   </div>
+</Layout>
