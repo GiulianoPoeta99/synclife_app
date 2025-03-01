@@ -11,6 +11,6 @@ import svelte from '@astrojs/svelte';
 export default defineConfig({
   integrations: [tailwind(), icon(), svelte()],
   devToolbar: {
-    enabled: false
-  }
+    enabled: false,
+  },
 });

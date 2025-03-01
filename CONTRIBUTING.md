@@ -31,7 +31,7 @@ nuestros commits y títulos de Pull Requests.
 - `fix`: Correcciones de errores
 - `docs`: Cambios en documentación
 - `style`: Cambios que no afectan el significado del código (espacios,
-formateo, etc.)
+  formateo, etc.)
 - `refactor`: Cambios de código que no corrigen errores ni añaden funcionalidad
 - `test`: Añadir o corregir tests
 - `chore`: Cambios en el proceso de build o herramientas auxiliares
@@ -55,7 +55,7 @@ style: ajustar indentación en archivos CSS
 ### Desarrollo de Nuevas Características
 
 1. Los desarrolladores deben crear una nueva rama desde `develop` para cada
-nueva característica:
+   nueva característica:
 
    ```bash
    git checkout develop
@@ -64,7 +64,7 @@ nueva característica:
    ```
 
 2. Realizar commits en la rama feature mientras se desarrolla la
-característica, siguiendo las convenciones de commits.
+   característica, siguiendo las convenciones de commits.
 
 3. Cuando la característica está lista, crear un Pull Request (PR) hacia `develop`.
 
@@ -73,7 +73,7 @@ característica, siguiendo las convenciones de commits.
 ### Actualizaciones a Producción
 
 1. Las fusiones a la rama `main` están restringidas y solo pueden ser
-realizadas por el dueño del repositorio.
+   realizadas por el dueño del repositorio.
 
 2. Periódicamente, el código en `develop` se fusiona en `main`:
 
@@ -100,7 +100,7 @@ main    ────────────●───────────
                     ↑                 ↑
 develop  ────●────●─●─────●────●──────●──────
               ↑     ↑     ↑    ↑
-feature-1     ●─────●     
+feature-1     ●─────●
                           ●────●
 feature-2                      ↑
 ```
