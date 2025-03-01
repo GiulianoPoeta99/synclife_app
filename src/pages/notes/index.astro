@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import NotesSections from '../../components/sections/notes/NotesSections.svelte';
 ---
 
-<Layout title="Notes" />
+<Layout title="Notes">
+  <NotesSections client:load />
+</Layout>
