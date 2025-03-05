@@ -1,21 +1,23 @@
 ---
 import LogoutButton from './LogoutButton.astro';
 import NavbarButton from './NavbarButton.astro';
+
+const currentPath = Astro.url.pathname;
 ---
 
 <nav class="flex flex-col items-center gap-4 h-full">
    <a
       href="/"
-      class="text-2xl text-gray-800 mb-4 bg-white border-2 rounded-3xl shadow-lg p-4"
-      style="font-family: 'Dream Avenue'; color: #333;"
+      class="text-2xl  mb-4 bg-white dark:border-transparent  border-2 rounded-3xl shadow-lg p-4 dark:bg-darkContainer text-[#333] dark:text-darkText"
+      style="font-family: 'Dream Avenue';"
    >
-      S<span class="text-[#D593D1]">y</span>ncLife<span class="text-[#D593D1]"
+      S<span class="text-[#D593D1] dark:text-[#FF1493]">y</span>ncLife<span class="text-[#D593D1] dark:text-[#FF1493]"
          >.</span
       >
    </a>
 
    <div
-      class="bg-white border-2 rounded-3xl shadow-lg p-4 w-32 flex flex-col justify-between flex-grow"
+      class="bg-white dark:border-transparent  border-2 rounded-3xl shadow-lg p-4 w-32 flex flex-col justify-between flex-grow dark:bg-darkContainer"
    >
       <ul class="space-y-4 list-none">
          {
@@ -26,13 +28,13 @@ import NavbarButton from './NavbarButton.astro';
                { href: '/reminders', label: 'Reminders', icon: 'check' },
                { href: '/notes', label: 'Notes', icon: 'pencil' },
                { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
-               { href: '/shobot', label: 'ShoBot', icon: 'send' },
+               { href: '/settings', label: 'Settings', icon: 'setting' },
             ].map((item) => (
                <NavbarButton
                   url={item.href}
                   label={item.label}
                   icon={item.icon}
-                  isActive={false}
+                  isActive={currentPath === item.href}
                />
             ))
          }
@@ -49,7 +51,7 @@ import NavbarButton from './NavbarButton.astro';
    buttons.forEach((button) => {
       const buttonUrl = button.getAttribute('href');
       if (buttonUrl === currentPath) {
-         button.classList.add('bg-[#D593D1]', 'text-white');
+         button.classList.add('bg-[#D593D1]', 'text-white',);
       } else {
          button.classList.remove('bg-[#D593D1]', 'text-white');
       }
