@@ -16,9 +16,9 @@ const { url, label, icon, isActive } = Astro.props;
       href={url}
       class={`block relative px-4 py-2 rounded-2xl transition-all duration-300 ease-in-out
          text-gray-800 dark:text-darkText
-         hover:bg-[#D593D1] dark:hover:bg-[#FF1493]
+         hover:bg-lightHover dark:hover:bg-darkHover
          hover:text-white 
-         ${isActive ? 'bg-[#D593D1] dark:bg-[#FF1493] text-white' : ''}`
+         ${isActive ? 'bg-lightColor dark:bg-darkHover text-white' : ''}`
       }
    >
       <Icon

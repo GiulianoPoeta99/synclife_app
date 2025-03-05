@@ -6,10 +6,11 @@ export default {
     extend: {
       colors: {
         lightHover: '#D593D1',
+        lightColor: '#D593D1',
         darkBg: '#121212',
         darkContainer: '#1E1E1E',
         darkAccent: '#FF8C00',
-        darkHover: '#FFA500',
+        darkHover: '#FF1490',
         darkText: '#F5F5F5',
         darkMuted: '#BDBDBD',
       },

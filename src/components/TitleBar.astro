@@ -1,9 +1,15 @@
-<header
-   class="flex items-center justify-center py-4 bg-white border-2 rounded-3xl shadow-lg"
->
-   <h1 class="text-6xl text-gray-800 dark:text-white" style="font-family: 'Dream Avenue';">
-      S<span class="text-[#D593D1] dark:bg-darkAccent">y</span>ncLife<span class="text-[#D593D1] dark:[#FF1493]"
-         >.</span
-      >
+---
+import DarkMode from '../components/DarkMode.svelte';
+---
+
+<header class="relative flex items-center py-4 bg-white border-2 rounded-3xl shadow-lg dark:bg-darkContainer dark:border-transparent">
+
+   <div class="absolute right-4">
+      <DarkMode client:load />
+   </div>
+
+   <h1 class="text-6xl text-gray-800 dark:text-white mx-auto pl-6" style="font-family: 'Dream Avenue';">
+      S<span class="text-lightColor dark:text-darkHover">y</span>ncLife
+      <span class="text-lightColor dark:text-darkHover">.</span>
    </h1>
 </header>
