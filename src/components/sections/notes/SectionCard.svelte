@@ -19,24 +19,10 @@
   }
 </script>
 
-<style>
-  .note-list {
-  max-height: 1200px; 
-  overflow-y: auto; 
-  padding-right: 5px;
-}
+<style></style>
 
-.note-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.note-list::-webkit-scrollbar-thumb {
-  background-color: rgba(191, 80, 183, 0.5);
-  border-radius: 4px;
-}
-</style>
-
-<div class="note-list grid grid-cols-1 gap-2">
+<div class= "max-h-[1200px] overflow-y-auto pr-2">
+<div class="grid grid-cols-1 gap-2 ">
   {#each notes as note}
     <NoteCard 
       noteId={note.id} 
@@ -47,4 +33,4 @@
     />
   {/each}
 </div>
-
+</div>

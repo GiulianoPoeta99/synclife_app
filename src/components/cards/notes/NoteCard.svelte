@@ -34,125 +34,49 @@
   }
 </script>
 
-<style>
-  .note-card {
-    background-color: rgba(213, 147, 209, 0.28); 
-    width: 328px;
-    height: 200px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .note-title {
-    background-color: rgba(191, 80, 183, 0.17);
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    color: black;
-  }
-  
-  .note-content {
-    color: rgba(0, 0, 0, 0.75);
-    font-size: 14px;
-    line-height: 1.4;
-    overflow-y: auto;
-    max-height: 100px;
-    word-wrap: break-word;
-    padding-right: 5px;
-    flex-grow: 1;
-  }
+<style></style>
 
-  .note-content::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .note-content::-webkit-scrollbar-thumb {
-    background-color: rgba(191, 80, 183, 0.5);
-    border-radius: 4px;
-  }
+<div class="w-[328px] h-[200px] p-3 flex flex-col rounded-lg shadow-md 
+  bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(60,60,60,0.5)]">
 
-  
-  .btn {
-    background-color: rgba(191, 80, 183, 0.17);
-    color: rgba(0, 0, 0, 0.95);
-    font-size: 1rem;
-    padding: 4px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  .btn:hover {
-    background-color: rgba(191, 80, 183, 0.35);
-  }
-  
-  .btn-container {
-    display: flex;
-    gap: 5px;
-  }
-  
-  .icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .edit-mode {
-    background-color: rgba(213, 147, 209, 0.28);
-    padding: 8px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .input-field, .textarea-field {
-    background-color: rgba(213, 147, 209, 0.28);
-    color: black;
-    border: 1px solid rgba(191, 80, 183, 0.4);
-    padding: 5px;
-    width: 100%;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-
-  .textarea-field {
-    max-height: 80px;
-    overflow-y: auto; 
-  }
-</style>
-
-<div class="note-card">
-  <div class="flex justify-between items-center mb-2">
-    <span class="note-title">{title}</span>
-    <div class="btn-container">
-      <button on:click={toggleEdit} class="btn">
-        <img src="src/icons/notes/edit.svg" alt="Editar" class="icon" />
+  <div class="flex justify-between items-center">
+    <span class="px-2 py-1 text-sm font-bold rounded bg-[rgba(191,80,183,0.17)] dark:bg-[rgba(100,100,100,0.5)] text-black dark:text-white">
+      {title}
+    </span>
+    <div class="flex gap-2">
+      <button on:click={toggleEdit} class="w-7 h-7 flex items-center justify-center 
+        rounded-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3]
+        transition-colors duration-200 hover:bg-[rgba(191,80,183,0.35)] dark:hover:bg-darkHover">
+        <img src="src/icons/notes/edit.svg" alt="Editar" class="w-4 h-4" />
       </button>
-      <button on:click={deleteNote} class="btn">
-        <img src="src/icons/notes/delete.svg" alt="Eliminar" class="icon" />
+      <button on:click={deleteNote} class="w-7 h-7 flex items-center justify-center 
+        rounded-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3]
+        transition-colors duration-200 hover:bg-[rgba(191,80,183,0.35)] dark:hover:bg-darkHover">
+        <img src="src/icons/notes/delete.svg" alt="Eliminar" class="w-4 h-4" />
       </button>
     </div>
   </div>
 
   {#if isEditing}
-    <div class="edit-mode">
-      <input type="text" bind:value={editedTitle} class="input-field" />
-      <textarea bind:value={editedContent} class="textarea-field"></textarea>
-      <button on:click={saveChanges} class="btn">
-        <img src="src/icons/notes/save.png" alt="Guardar" class="icon" />
+    <div class="mt-2 p-2 rounded-lg flex flex-col gap-2 bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(70,70,70,0.5)]">
+      <input type="text" bind:value={editedTitle} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
+        bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
+        rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover">
+      <textarea bind:value={editedContent} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
+        bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
+        rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover max-h-20"></textarea>
+      <button on:click={saveChanges} class="w-7 h-7 flex items-center justify-center 
+        rounded-md bg-[rgba(191,80,183,0.17)] dark:bg-[rgba(100,100,100,0.5)]
+        transition-colors duration-200 hover:bg-[rgba(191,80,183,0.35)] dark:hover:bg-[rgba(150,150,150,0.5)]">
+        <img src="src/icons/notes/save.png" alt="Guardar" class="w-4 h-4" />
       </button>
     </div>
   {:else}
-    <p class="note-content">{content}</p>
+    <p class="mt-2 text-sm leading-relaxed text-[rgba(0,0,0,0.75)] dark:text-[rgba(255,255,255,0.75)] 
+    overflow-y-auto max-h-[100px] pr-1 break-words">
+      {content}
+   </p>
+
   {/if}
 </div>
+

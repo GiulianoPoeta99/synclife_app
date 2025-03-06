@@ -282,70 +282,18 @@ function nextSection() {
 </script>
 
 <style>
-    .section-btn {
-      background-color: rgba(231, 222, 222, 1);
-      border-radius: 24px;
-      padding: 10px 20px;
-      transition: background-color 0.2s ease-in-out;
-    }
-  
-    .section-btn.active {
-      background-color: rgba(213, 147, 209, 0.87);
-    }
-  
-    .section-btn:hover {
-      background-color: rgba(213, 147, 209, 0.6);
-      color: black;
-    }
-    
-    .section-input {
-    border: none;
-    padding: 6px 10px;
-    border-radius: 24px;
-    font-size: 16px;
-    outline: none;
-    background-color: rgba(231, 222, 222, 1);
-    }
-
-    .add-btn {
-      background-color: #ECE6F0;
-      color: #65558F;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-    }
-  
-    .add-btn:hover {
-      background-color: #d3c8e0;
-      transform: scale(1.05);
-    }
-  
-    .notes-container {
-      max-height: 440px; 
-      overflow-y: auto; 
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 8px;
-      padding: 10px;
-      justify-content: center;
-    }
-  
-    .notes-container::-webkit-scrollbar {
-      width: 6px;
-    }
-  
-    .notes-container::-webkit-scrollbar-thumb {
-      background-color: rgba(191, 80, 183, 0.5);
-      border-radius: 4px;
-    }
-  </style>
+</style>
   
   <div class="flex flex-col items-center w-full px-4 mt-4 mb-16">
-    <button on:click={handleCreateNote} class="pr-7 pl-7 pt-3 pb-3 add-btn rounded-lg shadow-md text-xl absolute left-60">
+
+    <button on:click={handleCreateNote} class="pr-7 pl-7 pt-3 pb-3 rounded-lg shadow-md text-xl absolute left-60
+    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white transition-all duration-200 ease-in-out 
+    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105">
       +
     </button>
   
     <div class="flex items-center space-x-14">
-      <button on:click={previousSection} class="p-1 text-black text-xl">
+      <button on:click={previousSection} class="p-1 text-black dark:text-white text-xl">
         &#9664;
       </button>
   
@@ -355,7 +303,8 @@ function nextSection() {
           <input
             type="text"
             bind:value={editedSectionName}
-            class="section-input"
+            class="border-none px-4 py-2 rounded-full text-lg outline-none bg-[rgba(231,222,222,1)]
+            dark:bg-[rgba(50,50,50,0.9)] dark:text-white"
             on:blur={() => setTimeout(() => saveSectionEdit(section.id), 100)} 
             on:keydown={(e) => { 
                 if (e.key === 'Enter') {
@@ -366,33 +315,45 @@ function nextSection() {
             autofocus
           />
         {:else}
-          <button 
-            class="section-btn shadow-md transition font-bold text-black {index + startIndex === activeSectionIndex ? 'active text-white' : ''}"
+        <button 
+            class="px-5 py-2 rounded-full shadow-md font-bold text-black dark:text-white transition-colors duration-200 
+            bg-[rgba(231,222,222,1)] dark:bg-[rgba(50,50,50,0.9)] hover:bg-[rgba(213,147,209,0.6)]
+            dark:hover:bg-darkHover"
+
+            class:bg-[rgba(213,147,209,0.87)]={index + startIndex === activeSectionIndex}  
+            class:dark:bg-darkHover={index + startIndex === activeSectionIndex}  
+            class:text-white={index + startIndex === activeSectionIndex}
+
             on:dblclick={() => startEditingSection(section.id, section.sectionTitle)}
             on:click={() => activeSectionIndex = index + startIndex}>
             {section.sectionTitle}
-          </button>
+        </button>
+
+
+
         {/if}
       {/each}
   
-      <button on:click={nextSection} class="p-1 text-black text-xl">
+      <button on:click={nextSection} class="p-1 text-black dark:text-white text-xl">
         &#9654;
       </button>
     </div>
   
-    <button on:click={handleCreateTag} class="p-3 add-btn rounded-lg shadow-md absolute right-20">
+    <button on:click={handleCreateTag} class="p-3 rounded-lg shadow-md absolute right-20 transition-all duration-200 ease-in-out
+    bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.9)] text-[#65558F] dark:text-white hover:bg-[#d3c8e0] 
+    dark:hover:bg-darkHover hover:scale-105">
       + New Tag
     </button>
   </div>
   
   {#if sections.length > 0 && sections[activeSectionIndex]}
-    <div class="notes-container">
+    <div class="max-h-[440px] overflow-y-auto grid grid-cols-3 gap-2 p-2 justify-items-center">
       {#each sections[activeSectionIndex].notes as note}
         <SectionCard notes={[note]} on:deleteNote={handleDeleteNote} on:updateNote={handleUpdateNote} />
       {/each}
     </div>
   {:else}
-    <p class="text-gray-500">No hay notas disponibles.</p>
+    <p class="text-gray-500 dark:text-gray-300">No hay notas disponibles.</p>
   {/if}
   
   
