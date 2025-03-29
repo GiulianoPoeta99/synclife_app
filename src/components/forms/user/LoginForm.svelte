@@ -51,7 +51,7 @@
         password: formData.password,
       };
 
-      const response = await fetch('http://localhost:8000/api/v1/users/login', {
+      const response = await fetch('http://localhost:8000/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -89,10 +89,10 @@
 
 <form
   on:submit|preventDefault={handleSubmit}
-  class="space-y-4 text-gray-800 max-w-md mx-auto"
+  class="space-y-4 text-gray-800 max-w-md mx-auto dark:text-darkText"
 >
   <div>
-    <label for="email" class="block text-sm font-medium text-gray-800"
+    <label for="email" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Email</label
     >
     <input
@@ -101,7 +101,7 @@
       bind:value={formData.email}
       required
       autocomplete="email"
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white dark:bg-darkBg  border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover"
     />
     {#if errorMessages.email}
       <span class="text-red-500 text-sm">{errorMessages.email}</span>
@@ -109,7 +109,7 @@
   </div>
 
   <div>
-    <label for="password" class="block text-sm font-medium text-gray-800"
+    <label for="password" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Contraseña</label
     >
     <input
@@ -118,7 +118,7 @@
       bind:value={formData.password}
       required
       autocomplete="new-password"
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white dark:bg-darkBg  border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover"
     />
     {#if errorMessages.password}
       <span class="text-red-500 text-sm">{errorMessages.password}</span>
@@ -135,7 +135,7 @@
     <button
       type="submit"
       disabled={isSubmitting}
-      class="text-xl w-auto text-center px-8 bg-[#D593D1] text-white py-2 rounded-2xl transition duration-300 ease-in-out hover:bg-[#b76aaf] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      class="text-xl w-auto text-center px-8 bg-[#D593D1] dark:bg-darkHover text-white py-2 rounded-2xl transition duration-300 ease-in-out hover:bg-[#b76aaf] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isSubmitting ? 'Sending...' : 'Send'}
     </button>

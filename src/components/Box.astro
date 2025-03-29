@@ -4,22 +4,22 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import DarkMode from './DarkMode.svelte';
 ---
 
 <div class="flex flex-col h-full w-full">
-   <div
-      class="bg-white border-2 rounded-3xl shadow-lg flex flex-col h-full w-full p-6"
-   >
-      {
-         title && (
-            <>
-               <div class="text-center text-3xl font-bold my-4">
-                  <span class="text-transparent bg-gradient-to-r from-black via-gray-800 to-[#D593D1] bg-clip-text">
-                     {title}
-                  </span>
-               </div>
-
-               <hr class="border-gray-300 border-t-1 w-[95%] mx-auto" />
+   <div class="bg-white dark:border-transparent border-2 rounded-3xl shadow-lg flex flex-col h-full w-full p-6 dark:bg-darkContainer">
+      {title && (
+         <>
+         <div class="relative flex items-center my-4">
+            <h1 class="text-3xl font-bold mx-auto bg-clip-text text-transparent bg-gradient-to-r from-black dark:from-darkText via-gray-800 dark:via-darkMuted to-lightColor dark:to-darkHover">
+               {title}
+            </h1>
+            <div class="absolute right-0">
+               <DarkMode client:load />
+            </div>
+         </div>
+               <hr class="border-gray-300 border-t-1 w-[95%] mx-auto " />
             </>
          )
       }

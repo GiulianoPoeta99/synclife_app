@@ -77,7 +77,7 @@
       };
 
       const response = await fetch(
-        'http://localhost:8000/api/v1/users/register',
+        'http://localhost:8000/api/users/register',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -121,10 +121,10 @@
 
 <form
   on:submit|preventDefault={handleSubmit}
-  class="space-y-4 text-gray-800 max-w-md mx-auto"
+  class="space-y-4 text-gray-800 max-w-md mx-auto dark:text-darkText"
 >
   <div>
-    <label for="email" class="block text-sm font-medium text-gray-800"
+    <label for="email" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Email</label
     >
     <input
@@ -133,7 +133,7 @@
       bind:value={formData.email}
       required
       autocomplete="email"
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.email}
       <span class="text-red-500 text-sm">{errorMessages.email}</span>
@@ -141,7 +141,7 @@
   </div>
 
   <div>
-    <label for="password" class="block text-sm font-medium text-gray-800"
+    <label for="password" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Contraseña</label
     >
     <input
@@ -150,7 +150,7 @@
       bind:value={formData.password}
       required
       autocomplete="new-password"
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white  dark:bg-darkBg  border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.password}
       <span class="text-red-500 text-sm">{errorMessages.password}</span>
@@ -159,7 +159,7 @@
 
   <div class="flex gap-4">
     <div class="w-1/2">
-      <label for="firstName" class="block text-sm font-medium text-gray-800"
+      <label for="firstName" class="block text-sm font-medium text-gray-800 dark:text-darkText"
         >Nombre</label
       >
       <input
@@ -168,14 +168,14 @@
         bind:value={formData.firstName}
         required
         autocomplete="given-name"
-        class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+        class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
       />
       {#if errorMessages.firstName}
         <span class="text-red-500 text-sm">{errorMessages.firstName}</span>
       {/if}
     </div>
     <div class="w-1/2">
-      <label for="lastName" class="block text-sm font-medium text-gray-800"
+      <label for="lastName" class="block text-sm font-medium text-gray-800 dark:text-darkText"
         >Apellido</label
       >
       <input
@@ -184,7 +184,7 @@
         bind:value={formData.lastName}
         required
         autocomplete="family-name"
-        class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+        class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
       />
       {#if errorMessages.lastName}
         <span class="text-red-500 text-sm">{errorMessages.lastName}</span>
@@ -193,7 +193,7 @@
   </div>
 
   <div>
-    <label for="birthDate" class="block text-sm font-medium text-gray-800"
+    <label for="birthDate" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Fecha de Nacimiento</label
     >
     <input
@@ -202,7 +202,7 @@
       bind:value={formData.birthDate}
       required
       max={new Date().toISOString().split('T')[0]}
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.birthDate}
       <span class="text-red-500 text-sm">{errorMessages.birthDate}</span>
@@ -210,7 +210,7 @@
   </div>
 
   <div>
-    <label for="phone" class="block text-sm font-medium text-gray-800"
+    <label for="phone" class="block text-sm font-medium text-gray-800 dark:text-darkText"
       >Teléfono</label
     >
     <input
@@ -219,7 +219,7 @@
       bind:value={formData.phone}
       required
       autocomplete="tel"
-      class="w-full bg-white border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+      class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.phone}
       <span class="text-red-500 text-sm">{errorMessages.phone}</span>
@@ -227,7 +227,7 @@
   </div>
 
   {#if errorMessages.general}
-    <div class="text-red-500 text-center bg-red-100 p-2 rounded-lg">
+    <div class="text-red-500 text-center bg-red-100 p-2 rounded-lg dark:text-darkText">
       {errorMessages.general}
     </div>
   {/if}
@@ -236,7 +236,7 @@
     <button
       type="submit"
       disabled={isSubmitting}
-      class="text-xl w-auto text-center px-8 bg-[#D593D1] text-white py-2 rounded-2xl transition duration-300 ease-in-out hover:bg-[#b76aaf] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      class="text-xl w-auto text-center px-8 bg-lightColor dark:bg-darkHover text-white py-2 rounded-2xl transition duration-300 ease-in-out hover:bg-[#b76aaf] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isSubmitting ? 'Sending...' : 'Send'}
     </button>

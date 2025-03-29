@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import StockTable from '../../components/tables/StockTable.svelte'
 ---
 
-<Layout title="Stock" />
+<Layout title="Stock">
+    <StockTable client:load/>
+</Layout>

@@ -17,6 +17,9 @@ importers:
       astro-icon:
         specifier: ^1.1.4
         version: 1.1.4
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       svelte:
         specifier: ^5.4.0
         version: 5.4.0
@@ -33,6 +36,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^19.6.0
         version: 19.6.0
+      '@types/dotenv':
+        specifier: ^8.2.3
+        version: 8.2.3
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.17.0
         version: 8.17.0(@typescript-eslint/parser@8.17.0(eslint@9.16.0(jiti@1.21.6))(typescript@5.7.2))(eslint@9.16.0(jiti@1.21.6))(typescript@5.7.2)
@@ -60,6 +66,9 @@ importers:
       prettier:
         specifier: ^3.4.1
         version: 3.4.1
+      tailwind-scrollbar:
+        specifier: ^4.0.1
+        version: 4.0.1(react@19.0.0)(tailwindcss@3.4.15)
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -813,6 +822,10 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/dotenv@8.2.3':
+    resolution: {integrity: sha512-g2FXjlDX/cYuc5CiQvyU/6kkbP1JtmGzh0obW50zD7OKeILVL0NSpPWLXVfqoAGQjom2/SLLx9zHq0KXvD6mbw==}
+    deprecated: This is a stub types definition. dotenv provides its own type definitions, so you do not need this installed.
+
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
@@ -833,6 +846,9 @@ packages:
 
   '@types/node@22.10.1':
     resolution: {integrity: sha512-qKgsUwfHZV2WCWLAnVP1JqnpE6Im6h3Y0+fYgMTasNQ7V++CBX5OT1as0g0f+OyubbFqhf6XVNIsmN4IIhEgGQ==}
+
+  '@types/prismjs@1.26.5':
+    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
 
   '@types/tar@6.1.13':
     resolution: {integrity: sha512-IznnlmU5f4WcGTh2ltRu/Ijpmk8wiWXfF0VA4s+HPjHZgvFggk1YaIkbo5krX/zUCzWF8N/l4+W/LNxnvAJ8nw==}
@@ -1336,6 +1352,10 @@ packages:
   dot-prop@5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
     engines: {node: '>=8'}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
 
   dset@3.1.4:
     resolution: {integrity: sha512-2QF/g9/zTaPDc3BjNcVTGoBbXBgYfMTTceLaYcFJ/W9kggFUkhxD/hMEeuLKbugyef9SqAx8cpgwlIP/jinUTA==}
@@ -2421,6 +2441,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  prism-react-renderer@2.4.1:
+    resolution: {integrity: sha512-ey8Ls/+Di31eqzUxC46h8MksNuGx/n0AAC8uKpwFau4RPDYLuE3EXTp8N8G2vX2N7UC/+IXeNUnlWBGGcAG+Ig==}
+    peerDependencies:
+      react: '>=16.0.0'
+
   prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
     engines: {node: '>=6'}
@@ -2444,6 +2469,10 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  react@19.0.0:
+    resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
+    engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
@@ -2672,6 +2701,12 @@ packages:
   synckit@0.9.2:
     resolution: {integrity: sha512-vrozgXDQwYO72vHjUb/HnFbQx1exDjoKzqx23aXEg2a9VIg2TSFZ8FmeZpTjUCFMYw7mpX4BE2SFu8wI7asYsw==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  tailwind-scrollbar@4.0.1:
+    resolution: {integrity: sha512-j2ZfUI7p8xmSQdlqaCxEb4Mha8ErvWjDVyu2Ke4IstWprQ/6TmIz1GSLE62vsTlXwnMLYhuvbFbIFzaJGOGtMg==}
+    engines: {node: '>=12.13.0'}
+    peerDependencies:
+      tailwindcss: 4.x
 
   tailwindcss@3.4.15:
     resolution: {integrity: sha512-r4MeXnfBmSOuKUWmXe6h2CcyfzJCEk4F0pptO5jlnYSIViUkVmsawj80N5h2lO3gwcmSb4n3PuN+e+GC1Guylw==}
@@ -3874,6 +3909,10 @@ snapshots:
     dependencies:
       '@types/ms': 0.7.34
 
+  '@types/dotenv@8.2.3':
+    dependencies:
+      dotenv: 16.4.7
+
   '@types/estree@1.0.6': {}
 
   '@types/hast@3.0.4':
@@ -3895,6 +3934,8 @@ snapshots:
   '@types/node@22.10.1':
     dependencies:
       undici-types: 6.20.0
+
+  '@types/prismjs@1.26.5': {}
 
   '@types/tar@6.1.13':
     dependencies:
@@ -4523,6 +4564,8 @@ snapshots:
   dot-prop@5.3.0:
     dependencies:
       is-obj: 2.0.0
+
+  dotenv@16.4.7: {}
 
   dset@3.1.4: {}
 
@@ -5787,6 +5830,12 @@ snapshots:
 
   prettier@3.4.1: {}
 
+  prism-react-renderer@2.4.1(react@19.0.0):
+    dependencies:
+      '@types/prismjs': 1.26.5
+      clsx: 2.1.1
+      react: 19.0.0
+
   prismjs@1.29.0: {}
 
   prompts@2.4.2:
@@ -5806,6 +5855,8 @@ snapshots:
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
+
+  react@19.0.0: {}
 
   read-cache@1.0.0:
     dependencies:
@@ -6133,6 +6184,13 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.1.1
       tslib: 2.8.1
+
+  tailwind-scrollbar@4.0.1(react@19.0.0)(tailwindcss@3.4.15):
+    dependencies:
+      prism-react-renderer: 2.4.1(react@19.0.0)
+      tailwindcss: 3.4.15
+    transitivePeerDependencies:
+      - react
 
   tailwindcss@3.4.15:
     dependencies:

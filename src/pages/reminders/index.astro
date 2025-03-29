@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ReminderTable from '../../components/tables/ReminderTable.svelte'
 ---
 
-<Layout title="Reminders" />
+<Layout title="Reminders">
+    <ReminderTable client:load/>
+</Layout>
