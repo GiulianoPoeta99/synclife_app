@@ -51,7 +51,7 @@
         password: formData.password,
       };
 
-      const response = await fetch('http://localhost:8000/api/v1/users/login', {
+      const response = await fetch('http://localhost:8000/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -22,15 +22,18 @@
 
   function saveChanges() {
     isEditing = false;
+    console.log("NoteCard - updateNote:"),
     dispatch("updateNote", {
-      noteId,
-      title: editedTitle,
-      content: editedContent,
-    });
+    note_uuid:noteId,
+    title: editedTitle,
+    content: editedContent,
+  });
+
   }
 
   function deleteNote() {
-    dispatch("deleteNote", { noteId });
+    console.log("NoteCard - deleteNote:", { note_uuid: noteId });
+    dispatch("deleteNote", { note_uuid:noteId });
   }
 </script>
 

@@ -1,7 +1,8 @@
-const BASE_URL = 'http://localhost:8000/api/v1/inventory';
+export const BASE_URL_I = `${import.meta.env.PUBLIC_BASE_URL}/inventory`;
+
 
 export async function getAllInventoryItems(sessionToken: string) {
-  const response = await fetch(`${BASE_URL}/view_all`, {
+  const response = await fetch(`${BASE_URL_I}/`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -10,22 +11,16 @@ export async function getAllInventoryItems(sessionToken: string) {
   });
 
   if (!response.ok) {
-    console.error(
-      'Error en la API de inventario:',
-      response.status,
-      await response.text()
-    );
+    console.error('Error al obtener inventario:',response.status);
     return [];
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 }
 
-export async function getInventoryItem(
-  inventoryId: string,
-  sessionToken: string
-) {
-  const response = await fetch(`${BASE_URL}/view/${inventoryId}`, {
+export async function getInventoryItem(inventoryId: string,sessionToken: string) {
+  const response = await fetch(`${BASE_URL_I}/${inventoryId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -34,39 +29,32 @@ export async function getInventoryItem(
   });
 
   if (!response.ok) {
-    console.error(
-      `Error al obtener el producto ${inventoryId}:`,
-      response.status,
-      await response.text()
-    );
+    console.error(`Error al obtener el producto ${inventoryId}:`);
     return null;
   }
 
-  return response.json();
+  const data = await response.json();
+  return data.inventory;
 }
 
-export async function createInventoryItem(
-  userId: string,
-  productName: string,
-  amount: number,
-  expirationDate: string,
-  sessionToken: string
-) {
-  const response = await fetch(`${BASE_URL}/create`, {
+export async function createInventoryItem(productName: string,amount: number,expirationDate: string,sessionToken: string) {
+  const response = await fetch(`${BASE_URL_I}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'session-token': sessionToken,
     },
     body: JSON.stringify({
-      user_id: userId,
       product_name: productName,
       amount,
-      expiration_date: expirationDate,
-    }),
+      expiration_date :expirationDate}),
   });
 
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) {
+    console.error("Error en createInventoryItem:", data);
+  }
+  return data;
 }
 
 export async function updateInventoryItem(
@@ -76,7 +64,7 @@ export async function updateInventoryItem(
   expirationDate: string,
   sessionToken: string
 ) {
-  const response = await fetch(`${BASE_URL}/update`, {
+  const response = await fetch(`${BASE_URL_I}/`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -86,42 +74,32 @@ export async function updateInventoryItem(
       inventory_id: inventoryId,
       product_name: productName,
       amount,
-      expiration_date: expirationDate,
-    }),
+      expiration_date: expirationDate}),
   });
 
+  const data = await response.json();
   if (!response.ok) {
-    console.error(
-      `Error al actualizar el producto ${inventoryId}:`,
-      response.status,
-      await response.text()
-    );
-    return null;
+    console.error("Error en updateInventoryItem:", data);
   }
-
-  return response.json();
+  return data;
 }
 
 export async function deleteInventoryItem(
   inventoryId: string,
   sessionToken: string
 ) {
-  const response = await fetch(`${BASE_URL}/delete/${inventoryId}`, {
+  const response = await fetch(`${BASE_URL_I}/`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'session-token': sessionToken,
     },
+    body: JSON.stringify({ inventory_uuid: inventoryId }),
   });
 
+  const data = await response.json();
   if (!response.ok) {
-    console.error(
-      `Error al eliminar el producto ${inventoryId}:`,
-      response.status,
-      await response.text()
-    );
-    return null;
+    console.error("Error en deleteInventoryItem:", data);
   }
-
-  return response.json();
+  return data;
 }

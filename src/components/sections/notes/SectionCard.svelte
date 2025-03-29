@@ -7,15 +7,14 @@
   const dispatch = createEventDispatcher();
 
   function handleDelete(event) {
-    dispatch("deleteNote", { noteId: event.detail.noteId });
+    console.log("SectionCard - forward deleteNote:", event.detail);
+    dispatch("deleteNote",  event.detail );
   }
 
   function handleUpdate(event) {
-    dispatch("updateNote", { 
-      noteId: event.detail.noteId, 
-      title: event.detail.title, 
-      content: event.detail.content 
-    });
+    console.log("SectionCard - forward updateNote:", event.detail);
+    dispatch("updateNote", event.detail);
+
   }
 </script>
 

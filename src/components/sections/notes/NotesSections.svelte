@@ -19,7 +19,7 @@ async function getSessionData() {
         userId = localStorage.getItem("user_id") || "";
 
         if (!userId && sessionToken) {
-            const response = await fetch("http://localhost:8000/api/v1/check/validate-session", {
+            const response = await fetch("http://localhost:8000/api/check/validate-session", {
                 method: "GET",
                 headers: { "session-token": sessionToken }
             });
@@ -43,10 +43,17 @@ async function loadSectionsAndNotes() {
         const tagsData = await getAllTags(sessionToken);
 
         sections = await Promise.all(tagsData.map(async tag => {
-            const notes = await getNotesByTag(tag.tag.id, sessionToken);
+            const rawNotes = await getNotesByTag(tag.uuid, sessionToken);
+
+            const notes = rawNotes.map(note => ({
+                id: note.uuid, 
+                title: note.title,
+                content: note.content,
+            }));
+
             return {
-                id: tag.tag.id,
-                sectionTitle: tag.tag.name,
+                id: tag.uuid,
+                sectionTitle: tag.name,
                 notes
             };
         }));
@@ -60,6 +67,7 @@ async function loadSectionsAndNotes() {
 }
 
 
+
 async function initApp() {
     if (typeof window !== "undefined") {
         await getSessionData();
@@ -71,66 +79,71 @@ initApp();
 
 // CRUDS de notas y tags
 
+
 async function handleCreateNote() {
-    if (!sections[activeSectionIndex]) return;
+  if (!sections[activeSectionIndex]) return;
 
-    const activeSection = sections[activeSectionIndex];
+  const activeSection = sections[activeSectionIndex];
+  const existingTitles = activeSection.notes.map(n => n.title);
 
-    let baseName = "New Note";
-    let counter = 1;
+  const baseTitle = "New Note";
+  let title = baseTitle;
+  let content = "Write here...";
+  let counter = 1;
+  let createdNote = null;
 
-    const existingNames = activeSection.notes.map(note => note.title);
-    
-    let noteTitle = baseName;
-    while (existingNames.includes(noteTitle)) {
-        noteTitle = `${baseName} ${counter}`;
+  try {
+    while (!createdNote) {
+      while (existingTitles.includes(title)) {
+        title = `${baseTitle} ${counter}`;
         counter++;
+      }
+
+      const response = await createNote(title, content, sessionToken);
+
+      if (response?.note) {
+        createdNote = response.note;
+        break;
+      }
+
+      if (response?.detail?.includes("Ya existe una nota con ese titulo")) {
+        console.warn(" Título repetido, generando otro...");
+        title = `${baseTitle} ${counter}`;
+        counter++;
+        continue;
+      }
+
+      return;
     }
 
-    let noteContent = "Write here...";
-
-    try {
-
-        let response = await createNote(userId, noteTitle, noteContent, sessionToken);
-
-        while (response.detail && response.detail.includes("Ya existe una nota con ese titulo")) {
-            
-            noteTitle = `${baseName} ${counter}`;
-            counter++;
-
-            response = await createNote(userId, noteTitle, noteContent, sessionToken);
-        }
-
-        if (!response || !response.note) {
-            console.error("Error: La API no devolvió la nota creada.", response);
-            return;
-        }
-
-
-        if (activeSection.id !== "untagged") {
-            await linkNoteToTag(response.note.id, activeSection.id, sessionToken);
-        }
-
-        activeSection.notes.push({
-            id: response.note.id,
-            title: response.note.title,
-            content: response.note.content
-        });
-
-        sections = [...sections];
-        await tick();
-
-        console.log("Nota creada correctamente.");
-    } catch (error) {
-        console.error("Error al crear la nota:", error);
+    if (activeSection.id !== "untagged") {
+      const tagResponse = await linkNoteToTag(createdNote.uuid, activeSection.id, sessionToken);
     }
+
+    activeSection.notes.push({
+      id: createdNote.uuid,
+      title: createdNote.title,
+      content: createdNote.content
+    });
+
+    sections = [...sections];
+    await tick();
+
+    console.log("Nota creada correctamente:", createdNote.title);
+  } catch (error) {
+    console.error("Error en handleCreateNote:", error);
+  }
 }
 
+
+
+
  async function handleDeleteNote(event) {
-    const noteId = event.detail.noteId;
+    const note_uuid = event.detail.note_uuid;
+
 
     try {
-        const response = await deleteNote(noteId, sessionToken);
+        const response = await deleteNote(note_uuid, sessionToken);
 
         if (!response || !response.note) {
             console.error("Error: La API no eliminó la nota correctamente.");
@@ -138,7 +151,7 @@ async function handleCreateNote() {
         }
 
         sections.forEach(section => {
-            section.notes = section.notes.filter(note => note.id !== noteId);
+            section.notes = section.notes.filter(note => note.id !== note_uuid);
         });
 
         sections = [...sections];
@@ -150,10 +163,10 @@ async function handleCreateNote() {
 }
 
 async function handleUpdateNote(event) {
-    const { noteId, title, content } = event.detail;
+    const { note_uuid, title, content } = event.detail;
 
     try {
-        const response = await updateNote(noteId, title, content, sessionToken);
+        const response = await updateNote(note_uuid, title, content, sessionToken);
 
         if (!response || !response.note) {
             console.error("Error: La API no actualizó la nota correctamente.");
@@ -161,17 +174,17 @@ async function handleUpdateNote(event) {
         }
 
         let updatedSection = sections.find(section => 
-            section.notes.some(note => note.id === noteId)
+            section.notes.some(note => note.id === note_uuid)
         );
 
 
-        await linkNoteToTag(noteId, updatedSection.id, sessionToken);
+        await linkNoteToTag(note_uuid, updatedSection.id, sessionToken);
 
         sections.forEach(section => {
-            const noteIndex = section.notes.findIndex(note => note.id === noteId);
+            const noteIndex = section.notes.findIndex(note => note.id === note_uuid);
             if (noteIndex !== -1) {
                 section.notes[noteIndex] = {
-                    id: response.note.id, 
+                    id: response.note.uuid, 
                     title: response.note.title, 
                     content: response.note.content,
                 };
@@ -199,16 +212,18 @@ async function handleCreateTag() {
     }
 
     try {
-        const newTag = await createTag(userId, newName, sessionToken);
+        const newTag = await createTag(newName, sessionToken);
 
-        if (!newTag || !newTag.tag || !newTag.tag.id) {
+        if  (!newTag || !newTag.tag || !newTag.tag.uuid) 
+        {
             console.error("Error al crear la nueva sección:", newTag);
             return;
         }
 
         sections = [
             ...sections,
-            { id: newTag.tag.id, sectionTitle: newTag.tag.name, notes: [] }
+            {  id: newTag.tag.uuid, sectionTitle: newTag.tag.name, notes: [] 
+        }
         ];
 
         activeSectionIndex = sections.length - 1;
@@ -255,18 +270,20 @@ function startEditingSection(sectionId: string, currentName: string) {
 }
 
 
+
 async function saveSectionEdit(sectionId: string) {
-    if (editedSectionName.trim() === "") {
+  await tick();
 
-        if (editingSectionId !== sectionId) return;
-        editingSectionId = null;
+  if (editedSectionName.trim() === "") {
+    if (editingSectionId !== sectionId) return;
+    editingSectionId = null;
+    await handleDeleteTag(sectionId);
+    return;
+  }
 
-        await handleDeleteTag(sectionId);
-        return;
-    }
-
-    await handleUpdateTag(sectionId, editedSectionName);
+  await handleUpdateTag(sectionId, editedSectionName);
 }
+
 
 
 
@@ -305,7 +322,7 @@ function nextSection() {
             bind:value={editedSectionName}
             class="border-none px-4 py-2 rounded-full text-lg outline-none bg-[rgba(231,222,222,1)]
             dark:bg-[rgba(50,50,50,0.9)] dark:text-white"
-            on:blur={() => setTimeout(() => saveSectionEdit(section.id), 100)} 
+            on:blur={() => saveSectionEdit(section.id)} 
             on:keydown={(e) => { 
                 if (e.key === 'Enter') {
                 e.preventDefault();

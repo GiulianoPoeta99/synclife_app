@@ -28,7 +28,7 @@ async function getSessionData() {
         userId = localStorage.getItem("user_id") || "";
 
         if (!userId && sessionToken) {
-            const response = await fetch("http://localhost:8000/api/v1/check/validate-session", {
+            const response = await fetch("http://localhost:8000/api/check/validate-session", {
                 method: "GET",
                 headers: { "session-token": sessionToken }
             });
@@ -52,18 +52,26 @@ async function loadInventory() {
     try {
         const data = await getAllInventoryItems(sessionToken);
 
-        if (!Array.isArray(data)) {
+
+        console.log("Respuesta del backend:", data);
+        if (!Array.isArray(data.inventory_items)) {
             console.error("Error: La API no devolvió una lista válida.", data);
-            inventory = [];
+            inventory = []; 
             return;
         }
-        inventory = data.map(entry => entry.item);
+
+        inventory = data.inventory_items.map(item => ({
+            ...item,
+            id: item.uuid 
+        }));
+
         await tick();
     } catch (error) {
         console.error("Error al cargar el inventario:", error);
         inventory = [];
     }
 }
+
 
 
 async function initApp() {
@@ -82,14 +90,16 @@ async function handleCreateItem() {
     let expirationDate = getTomorrowDate(); 
 
     try {
-        const response = await createInventoryItem(userId, productName, amount, expirationDate, sessionToken);
+        const response = await createInventoryItem(productName, amount, expirationDate, sessionToken);
 
         if (!response || !response.item) {
             console.error("Error: La API no devolvió el producto creado.", response);
             return;
         }
 
-        inventory.push(response.item);
+        const newItem = { ...response.item, id: response.item.uuid };
+        inventory.push(newItem);
+
 
         inventory = [...inventory];
         await tick();
@@ -116,6 +126,7 @@ async function handleDeleteItem(event) {
 
         inventory = inventory.filter(item => item.id !== itemId);
         await tick();
+        console.log("Producto eliminado correctamente.");
     } catch (error) {
         console.error("Error al eliminar el producto:", error);
     }

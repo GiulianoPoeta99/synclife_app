@@ -1,7 +1,11 @@
-const BASE_URL = 'http://localhost:8000/api/v1/tags';
+import { BASE_URL_N } from './notes';
+export const BASE_URL_T = `${import.meta.env.PUBLIC_BASE_URL}/tag`;
+
+
+
 
 export async function getAllTags(sessionToken: string) {
-  const response = await fetch(`${BASE_URL}/view_all`, {
+  const response = await fetch(`${BASE_URL_T}/`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -9,39 +13,52 @@ export async function getAllTags(sessionToken: string) {
     },
   });
 
-  return response.json();
+  const data = await response.json();
+  return data.tags || [];
 }
 
-export async function createTag(
-  userId: string,
-  tagName: string,
-  sessionToken: string
-) {
-  const response = await fetch(`${BASE_URL}/create`, {
+export async function createTag(name: string, sessionToken: string) {
+  const response = await fetch(`${BASE_URL_T}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'session-token': sessionToken,
     },
-    body: JSON.stringify({ user_id: userId, name: tagName }),
+    body: JSON.stringify({ name }),
   });
 
   return response.json();
 }
 
+
+export async function getTagById(tagId: string, sessionToken: string) {
+  const response = await fetch(`${BASE_URL_T}/${tagId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'session-token': sessionToken,
+    },
+  });
+
+  const data = await response.json();
+  return data.tag;
+}
+
+
 export async function deleteTag(tagId: string, sessionToken: string) {
   try {
-    const response = await fetch(`${BASE_URL}/delete/${tagId}`, {
+    const response = await fetch(`${BASE_URL_T}/`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         'session-token': sessionToken,
       },
+      body: JSON.stringify({ tag_uuid: tagId }),
     });
 
     if (!response.ok) {
       console.error(`Error al eliminar el tag ${tagId}:`, response.status);
-      const errorMessage = await response.text();
-      throw new Error(`Error ${response.status}: ${errorMessage}`);
+      throw new Error(await response.text());
     }
 
     return await response.json();
@@ -57,19 +74,18 @@ export async function updateTag(
   sessionToken: string
 ) {
   try {
-    const response = await fetch(`${BASE_URL}/update`, {
+    const response = await fetch(`${BASE_URL_T}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'session-token': sessionToken,
       },
-      body: JSON.stringify({ tag_id: tagId, name: newName }),
+      body: JSON.stringify({ tag_uuid: tagId, name: newName }),
+      
     });
 
     if (!response.ok) {
-      console.error(`Error al actualizar el tag ${tagId}:`, response.status);
-      const errorMessage = await response.text();
-      throw new Error(`Error ${response.status}: ${errorMessage}`);
+      throw new Error(await response.text());
     }
 
     return await response.json();
@@ -78,38 +94,26 @@ export async function updateTag(
     throw error;
   }
 }
-
 export async function getNotesByTag(tagId: string, sessionToken: string) {
   try {
-    const response = await fetch(
-      `http://localhost:8000/api/v1/notes/filter_by_tag?tag_id=${tagId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'session-token': sessionToken,
-        },
+    const response = await fetch(`${BASE_URL_N}/filter-by-tag/${tagId}`, {
+      method: 'GET',
+      headers: {
+        'session-token': sessionToken,
       }
-    );
+    });
 
     if (!response.ok) {
-      console.warn(
-        `No se encontraron notas para el tag ${tagId}:`,
-        await response.text()
-      );
+      console.warn('No se encontraron notas:', await response.text());
       return [];
     }
 
-    const notesForTag = await response.json();
-    return notesForTag.map(
-      (noteWrapper: { note: { id: any; title: any; content: any } }) => ({
-        id: noteWrapper.note.id,
-        title: noteWrapper.note.title,
-        content: noteWrapper.note.content,
-      })
-    );
+    const data = await response.json();
+    return data.notes || [];
   } catch (error) {
-    console.error(`Error al obtener notas para el tag ${tagId}:`, error);
+    console.error('Error en getNotesByTag:', error);
     return [];
   }
 }
+
+
