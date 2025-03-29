@@ -1,0 +1,58 @@
+---
+import LogoutButton from './LogoutButton.astro';
+import NavbarButton from './NavbarButton.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="flex flex-col items-center gap-4 h-full">
+   <a
+      href="/"
+      class="text-2xl mb-4 bg-white dark:border-transparent border-2 rounded-3xl shadow-lg p-4 dark:bg-darkContainer text-[#333] dark:text-darkText"
+      style="font-family: 'Dream Avenue';"
+   >
+      S<span class="text-lightColor dark:text-darkHover">y</span>ncLife<span class="text-lightColor dark:text-darkHover"
+         >.</span
+      >
+   </a>
+
+   <div
+      class="bg-white dark:border-transparent  border-2 rounded-3xl shadow-lg p-4 w-32 flex flex-col justify-between flex-grow dark:bg-darkContainer"
+   >
+      <ul class="space-y-4 list-none">
+         {
+            [
+               { href: '/', label: 'Dashboard', icon: 'dashboard' },
+               { href: '/stock', label: 'Stock', icon: 'inventory-box' },
+               { href: '/reminders', label: 'Reminders', icon: 'check' },
+               { href: '/notes', label: 'Notes', icon: 'pencil' },
+               { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
+               { href: '/user', label: 'Account', icon: 'user' },
+            ].map((item) => (
+               <NavbarButton
+                  url={item.href}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={currentPath === item.href}
+               />
+            ))
+         }
+      </ul>
+      <LogoutButton />
+   </div>
+</nav>
+
+<script>
+   const currentPath = window.location.pathname;
+
+   const buttons = document.querySelectorAll('a');
+
+   buttons.forEach((button) => {
+      const buttonUrl = button.getAttribute('href');
+      if (buttonUrl === currentPath) {
+         button.classList.add('bg-[#D593D1]', 'text-white',);
+      } else {
+         button.classList.remove('bg-[#D593D1]', 'text-white');
+      }
+   });
+</script>

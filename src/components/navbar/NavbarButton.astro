@@ -1,0 +1,30 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+   url: string;
+   label: string;
+   icon?: string;
+   isActive: boolean;
+}
+
+const { url, label, icon, isActive } = Astro.props;
+---
+
+<li class="flex flex-col items-center">
+   <a
+      href={url}
+      class={`block relative px-4 py-2 rounded-2xl transition-all duration-300 ease-in-out
+         text-gray-800 dark:text-darkText
+         hover:bg-lightHover dark:hover:bg-darkHover
+         hover:text-white 
+         ${isActive ? 'bg-lightColor dark:bg-darkHover text-white' : ''}`
+      }
+   >
+      <Icon
+         name={icon}
+         class={`w-6 h-6 transition-transform duration-300 ease-in-out ${isActive ? 'scale-110' : ''}`}
+      />
+   </a>
+   <span class="text-xs text-center mt-1 text-gray-600 dark:text-darkMuted">{label}</span>
+</li>

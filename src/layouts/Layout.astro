@@ -1,4 +1,6 @@
 ---
+import Navbar from '../components/navbar/Navbar.astro';
+import Box from '../components/Box.astro';
 interface Props {
 	title: string;
 }
@@ -7,8 +9,24 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
 	<head>
+		<script is:inline> // Este script soluciona el FOUC(parpadea el tema cuando se cambia)
+			const tema = (() => {
+			  if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+				return localStorage.getItem("theme");
+			  }
+			  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+				return "dark";
+			  }
+			  return "light";
+			})();
+			if (tema === "dark") {
+			  document.documentElement.classList.add("dark");
+			} else {
+			  document.documentElement.classList.remove("dark");
+			}
+		  </script>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
@@ -16,10 +34,80 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
-		<slot />
+	<body class="bg-gray-200 p-6 dark:bg-darkBg	">
+		<div class="grid grid-cols-[auto,1fr] gap-6 h-[calc(100vh-4rem)]">
+			<Navbar />
+			<main>
+				<Box title={title}>
+					<slot />
+				</Box>
+			</main>
+		</div>
+
+		<script>
+			const sessionToken = localStorage.getItem('session_token');
+
+			async function validateSession() {
+				if (!sessionToken) {
+					redirectToLogin();
+					return;
+				}
+
+				const response = await fetch(
+					'http://localhost:8000/api/check/validate-session',
+					{
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'session-token': sessionToken,
+						},
+					}
+				);
+
+				if (!response.ok) {
+					if (response.status === 401) {
+						console.warn('Sesión inválida o expirada');
+						localStorage.removeItem('session_token');
+						redirectToLogin();
+					} else {
+						console.error(
+							'Error al validar la sesión, código:',
+							response.status
+						);
+					}
+				} else {
+					const data = await response.json();
+					console.log('Sesión válida:', data);
+				}
+			}
+
+			function redirectToLogin() {
+				window.location.href = '/login';
+			}
+
+	
+			(function() {
+			const savedTheme = localStorage.getItem("theme");
+			if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+				document.documentElement.classList.add("dark");
+				document.documentElement.classList.remove("light");
+			} else {
+				document.documentElement.classList.add("light");
+				document.documentElement.classList.remove("dark");
+			}
+			})();
+
+			
+
+			// Validación inicial
+			validateSession();
+
+			// Validar la sesión cada 60 segundos
+			setInterval(validateSession, 60000);
+		</script>
 	</body>
 </html>
+
 <style is:global>
 	:root {
 		--accent: 136, 58, 234;
@@ -32,10 +120,20 @@ const { title } = Astro.props;
 			white 60%
 		);
 	}
+
+	nav a {
+	color: #333 !important;
+	}
+	.dark nav a {
+	color: #F5F5F5 !important;
+	}
+
+
 	html {
 		font-family: system-ui, sans-serif;
-		background: #13151a;
+		background: #e8e9e8;
 	}
+
 	code {
 		font-family:
 			Menlo,
