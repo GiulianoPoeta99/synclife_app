@@ -340,7 +340,7 @@ onMount(() => {
   <!-- Botones en escritorio -->
   <button on:click={handleCreateNote}
     class="hidden sm:block absolute left-0
-    p-3 rounded-lg shadow-md text-sm
+    p-3 rounded-lg shadow-md text-lg
     bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
     hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
     + New note
@@ -348,7 +348,7 @@ onMount(() => {
 
   <button on:click={handleCreateTag}
     class="hidden sm:block absolute right-0
-    p-3 rounded-lg shadow-md text-sm
+    p-3 rounded-lg shadow-md text-lg
     bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
     hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
     + New Tag

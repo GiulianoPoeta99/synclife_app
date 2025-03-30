@@ -256,7 +256,7 @@ function formatDate(dateString: string): string {
               >
             {:else}
               {item.product_name}
-            {/if}
+            {/if} 
           </td>
 
           <td class="px-3 py-3 sm:px-6 sm:py-5"
