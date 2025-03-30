@@ -5,54 +5,58 @@ import NavbarButton from './NavbarButton.astro';
 const currentPath = Astro.url.pathname;
 ---
 
-<nav class="flex flex-col items-center gap-4 h-full">
-   <a
-      href="/"
-      class="text-2xl mb-4 bg-white dark:border-transparent border-2 rounded-3xl shadow-lg p-4 dark:bg-darkContainer text-[#333] dark:text-darkText"
-      style="font-family: 'Dream Avenue';"
-   >
-      S<span class="text-lightColor dark:text-darkHover">y</span>ncLife<span class="text-lightColor dark:text-darkHover"
-         >.</span
-      >
-   </a>
+<nav id="navbar"
+  class="fixed sm:relative top-1/2 sm:top-0 left-1 sm:left-0 z-40 h-[90%] sm:h-full 
+         w-[130px] sm:w-32 
+         transform -translate-x-full sm:translate-x-0 
+         -translate-y-1/2 sm:translate-y-0
+         transition-transform duration-300 ease-in-out 
+         bg-white dark:bg-darkContainer rounded-3xl shadow-lg 
+         flex flex-col items-center gap-4 sm:flex sm:bg-transparent sm:shadow-none sm:dark:bg-transparent">
+  <a
+    id="navbar-title"
+    href="/"
+    class="text-2xl mb-4 bg-white dark:border-transparent border-2 rounded-3xl shadow-lg p-4 dark:bg-darkContainer text-[#333] dark:text-darkText sm:block hidden"
+    style="font-family: 'Dream Avenue';"
+  >
+    S<span class="text-lightColor dark:text-darkHover">y</span>ncLife<span class="text-lightColor dark:text-darkHover">.</span>
+  </a>
 
-   <div
-      class="bg-white dark:border-transparent  border-2 rounded-3xl shadow-lg p-4 w-32 flex flex-col justify-between flex-grow dark:bg-darkContainer"
-   >
-      <ul class="space-y-4 list-none">
-         {
-            [
-               { href: '/', label: 'Dashboard', icon: 'dashboard' },
-               { href: '/stock', label: 'Stock', icon: 'inventory-box' },
-               { href: '/reminders', label: 'Reminders', icon: 'check' },
-               { href: '/notes', label: 'Notes', icon: 'pencil' },
-               { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
-               { href: '/user', label: 'Account', icon: 'user' },
-            ].map((item) => (
-               <NavbarButton
-                  url={item.href}
-                  label={item.label}
-                  icon={item.icon}
-                  isActive={currentPath === item.href}
-               />
-            ))
-         }
-      </ul>
-      <LogoutButton />
-   </div>
+  <div class="bg-white dark:border-transparent border-2 rounded-3xl shadow-lg p-4 w-32 flex flex-col justify-between flex-grow dark:bg-darkContainer">
+    <ul class="space-y-4 list-none">
+      {
+        [
+          { href: '/', label: 'Dashboard', icon: 'dashboard' },
+          { href: '/stock', label: 'Stock', icon: 'inventory-box' },
+          { href: '/reminders', label: 'Reminders', icon: 'check' },
+          { href: '/notes', label: 'Notes', icon: 'pencil' },
+          { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
+          { href: '/user', label: 'Account', icon: 'user' },
+        ].map((item) => (
+          <NavbarButton
+            url={item.href}
+            label={item.label}
+            icon={item.icon}
+            isActive={currentPath === item.href}
+          />
+        ))
+      }
+    </ul>
+
+    <LogoutButton />
+  </div>
 </nav>
 
 <script>
-   const currentPath = window.location.pathname;
+  const currentPath = window.location.pathname;
+  const buttons = document.querySelectorAll('a');
 
-   const buttons = document.querySelectorAll('a');
-
-   buttons.forEach((button) => {
-      const buttonUrl = button.getAttribute('href');
-      if (buttonUrl === currentPath) {
-         button.classList.add('bg-[#D593D1]', 'text-white',);
-      } else {
-         button.classList.remove('bg-[#D593D1]', 'text-white');
-      }
-   });
+  buttons.forEach((button) => {
+    const buttonUrl = button.getAttribute('href');
+    if (buttonUrl === currentPath) {
+      button.classList.add('bg-[#D593D1]', 'text-white');
+    } else {
+      button.classList.remove('bg-[#D593D1]', 'text-white');
+    }
+  });
 </script>

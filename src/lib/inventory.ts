@@ -1,6 +1,5 @@
 export const BASE_URL_I = `${import.meta.env.PUBLIC_BASE_URL}/inventory`;
 
-
 export async function getAllInventoryItems(sessionToken: string) {
   const response = await fetch(`${BASE_URL_I}/`, {
     method: 'GET',
@@ -11,7 +10,7 @@ export async function getAllInventoryItems(sessionToken: string) {
   });
 
   if (!response.ok) {
-    console.error('Error al obtener inventario:',response.status);
+    console.error('Error al obtener inventario:', response.status);
     return [];
   }
 
@@ -19,7 +18,10 @@ export async function getAllInventoryItems(sessionToken: string) {
   return data;
 }
 
-export async function getInventoryItem(inventoryId: string,sessionToken: string) {
+export async function getInventoryItem(
+  inventoryId: string,
+  sessionToken: string
+) {
   const response = await fetch(`${BASE_URL_I}/${inventoryId}`, {
     method: 'GET',
     headers: {
@@ -37,7 +39,12 @@ export async function getInventoryItem(inventoryId: string,sessionToken: string)
   return data.inventory;
 }
 
-export async function createInventoryItem(productName: string,amount: number,expirationDate: string,sessionToken: string) {
+export async function createInventoryItem(
+  productName: string,
+  amount: number,
+  expirationDate: string,
+  sessionToken: string
+) {
   const response = await fetch(`${BASE_URL_I}/`, {
     method: 'POST',
     headers: {
@@ -47,12 +54,13 @@ export async function createInventoryItem(productName: string,amount: number,exp
     body: JSON.stringify({
       product_name: productName,
       amount,
-      expiration_date :expirationDate}),
+      expiration_date: expirationDate,
+    }),
   });
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("Error en createInventoryItem:", data);
+    console.error('Error en createInventoryItem:', data);
   }
   return data;
 }
@@ -74,12 +82,13 @@ export async function updateInventoryItem(
       inventory_id: inventoryId,
       product_name: productName,
       amount,
-      expiration_date: expirationDate}),
+      expiration_date: expirationDate,
+    }),
   });
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("Error en updateInventoryItem:", data);
+    console.error('Error en updateInventoryItem:', data);
   }
   return data;
 }
@@ -99,7 +108,7 @@ export async function deleteInventoryItem(
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("Error en deleteInventoryItem:", data);
+    console.error('Error en deleteInventoryItem:', data);
   }
   return data;
 }

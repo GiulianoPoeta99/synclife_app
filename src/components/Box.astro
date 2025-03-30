@@ -5,6 +5,7 @@ interface Props {
 
 const { title } = Astro.props;
 import DarkMode from './DarkMode.svelte';
+import Hamburger from './buttons/Hamburguer.svelte'
 ---
 
 <div class="flex flex-col h-full w-full">
@@ -12,6 +13,9 @@ import DarkMode from './DarkMode.svelte';
       {title && (
          <>
          <div class="relative flex items-center my-4">
+            <div class="absolute left-0 sm:hidden">
+               <Hamburger client:load />
+            </div>
             <h1 class="text-3xl font-bold mx-auto bg-clip-text text-transparent bg-gradient-to-r from-black dark:from-darkText via-gray-800 dark:via-darkMuted to-lightColor dark:to-darkHover">
                {title}
             </h1>

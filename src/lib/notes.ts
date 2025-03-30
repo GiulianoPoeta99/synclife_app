@@ -1,7 +1,5 @@
 export const BASE_URL_N = `${import.meta.env.PUBLIC_BASE_URL}/note`;
 
-
-
 export async function getAllNotes(sessionToken: string) {
   const response = await fetch(`${BASE_URL_N}/`, {
     method: 'GET',
@@ -20,7 +18,6 @@ export async function getAllNotes(sessionToken: string) {
   return data.notes || [];
 }
 
-
 export async function getNoteById(noteId: string, sessionToken: string) {
   const response = await fetch(`${BASE_URL_N}/${noteId}`, {
     method: 'GET',
@@ -33,14 +30,17 @@ export async function getNoteById(noteId: string, sessionToken: string) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Error en getNoteById", data)
+    console.error('Error en getNoteById', data);
   }
 
   return data;
 }
 
-
-export async function createNote(title: string, content: string, sessionToken: string) {
+export async function createNote(
+  title: string,
+  content: string,
+  sessionToken: string
+) {
   const response = await fetch(`${BASE_URL_N}/`, {
     method: 'POST',
     headers: {
@@ -53,17 +53,22 @@ export async function createNote(title: string, content: string, sessionToken: s
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Error en createNote:", data);
+    console.error('Error en createNote:', data);
   }
 
   return data;
 }
 
-
-
-export async function linkNoteToTag(noteId: string, tagId: string, sessionToken: string) {
+export async function linkNoteToTag(
+  noteId: string,
+  tagId: string,
+  sessionToken: string
+) {
   if (!noteId || !tagId) {
-    console.error("Error: UUID inválido al agregar tag a la nota:", { noteId, tagId });
+    console.error('Error: UUID inválido al agregar tag a la nota:', {
+      noteId,
+      tagId,
+    });
     return;
   }
 
@@ -82,14 +87,17 @@ export async function linkNoteToTag(noteId: string, tagId: string, sessionToken:
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Error en linkNoteToTag:", data);
+    console.error('Error en linkNoteToTag:', data);
   }
 
   return data;
 }
 
-
-export async function removeTagFromNote(noteId: string, tagId: string, sessionToken: string) {
+export async function removeTagFromNote(
+  noteId: string,
+  tagId: string,
+  sessionToken: string
+) {
   const response = await fetch(`${BASE_URL_N}/remove-tag`, {
     method: 'DELETE',
     headers: {
@@ -101,14 +109,17 @@ export async function removeTagFromNote(noteId: string, tagId: string, sessionTo
 
   const data = await response.json();
   if (!response.ok) {
-    console.error("Error en removeTagFromNote:", data);
+    console.error('Error en removeTagFromNote:', data);
   }
   return data;
 }
 
-
-
-export async function updateNote(note_uuid: string, title: string, content: string, sessionToken: string) {
+export async function updateNote(
+  note_uuid: string,
+  title: string,
+  content: string,
+  sessionToken: string
+) {
   const response = await fetch(`${BASE_URL_N}/`, {
     method: 'PUT',
     headers: {
@@ -121,7 +132,7 @@ export async function updateNote(note_uuid: string, title: string, content: stri
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Error en updateNote:", data);
+    console.error('Error en updateNote:', data);
   }
 
   return data;
@@ -140,11 +151,8 @@ export async function deleteNote(note_uuid: string, sessionToken: string) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Error en deleteNote:", data);
+    console.error('Error en deleteNote:', data);
   }
 
   return data;
 }
-
-
-

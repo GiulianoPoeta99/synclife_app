@@ -193,30 +193,48 @@ function formatDate(dateString: string): string {
 <style>
 </style>
 
-<div class="relative flex items-center w-full py-4">
 
-  <button on:click={handleCreateItem} class="p-4 rounded-lg shadow-md transition-all duration-200 ease-in-out
-  bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.9)] text-[#65558F] dark:text-white hover:bg-[#d3c8e0] 
-  dark:hover:bg-darkHover hover:scale-105">
-    + New item
-  </button>
+<div class="w-full grid grid-cols-1 sm:grid-cols-3 items-center gap-4 px-4 sm:px-6 py-4">
 
-  <div class="absolute left-0 right-0 flex justify-center pointer-events-none">
-    <fieldset class="fieldset w-[250px] mx-auto pointer-events-auto">
-      <input type="text" bind:value={searchQuery} class="input bg-[#F3EDF7] dark:bg-[rgba(50,50,50,0.9)] dark:placeholder-white placeholder-black w-full text-center" placeholder="🔍︎ Search your item" />
+  <div class="flex justify-center sm:justify-start">
+    <button
+      on:click={handleCreateItem}
+      class="w-full max-w-[150px] p-4 rounded-lg shadow-md transition-all duration-200 ease-in-out
+             bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.9)] text-[#65558F] dark:text-white 
+             hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105"
+    >
+      + New item
+    </button>
+  </div>
+
+  <div class="flex justify-center">
+    <fieldset class="w-full max-w-[250px]">
+      <input
+        type="text"
+        bind:value={searchQuery}
+        class="input w-full text-center text-sm sm:text-base
+               bg-[#F3EDF7] dark:bg-[rgba(50,50,50,0.9)]
+               dark:placeholder-white placeholder-black"
+        placeholder="🔍︎ Search your item"
+      />
     </fieldset>
   </div>
-  
+
+  <div class="hidden sm:block"></div>
 </div>
 
-<div class="overflow-x-auto w-full">
-  <table class="table border-separate border-spacing-y-2 w-full">
-    <thead class="text-black text-left dark:text-white">
+
+
+
+
+<div class="overflow-x-auto w-full px-2 sm:px-4 md:px-6">
+  <table class="min-w-full border-separate border-spacing-y-2 text-sm sm:text-base">
+    <thead class="text-black dark:text-white text-left">
       <tr>
-        <th class="px-6 py-3 ">Name</th>
-        <th class="px-4 py-3 ">Amount</th>
-        <th class="px-14 py-3 ">Maturity</th>
-        <th class="px-6 py-3 w-[150px]"></th>
+        <th class="px-3 py-2 sm:px-6 sm:py-3">Name</th>
+        <th class="px-3 py-2 sm:px-4 sm:py-3">Amount</th>
+        <th class="px-3 py-2 sm:px-8 sm:py-3">Maturity</th>
+        <th class="px-3 py-2 sm:px-6 sm:py-3 text-center w-[90px] sm:w-[140px] md:w-[160px]"></th>
       </tr>
     </thead>
     <tbody>
@@ -224,55 +242,78 @@ function formatDate(dateString: string): string {
 
         <tr class="text-black dark:text-white rounded-full overflow-hidden">
           
-          <td class="px-4 py-5 rounded-l-full"
+          <td class="px-3 py-3 sm:px-4 sm:py-5 rounded-l-full"
               class:bg-[rgba(213,147,209,0.28)]={index % 2 === 0}
               class:bg-[rgba(213,147,209,0.60)]={index % 2 !== 0}>
             {#if editingItemId === item.id}
-              <input type="text" bind:value={editedValues.product_name} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
-              bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
-              rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover">
+              <input
+                type="text"
+                bind:value={editedValues.product_name}
+                class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
+                       bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] 
+                       text-black dark:text-white rounded-md focus:ring-2 
+                       focus:ring-lightColor dark:focus:ring-darkHover"
+              >
             {:else}
               {item.product_name}
             {/if}
           </td>
 
-          <td class="px-8 py-5"
+          <td class="px-3 py-3 sm:px-6 sm:py-5"
               class:bg-[rgba(213,147,209,0.28)]={index % 2 === 0}
               class:bg-[rgba(213,147,209,0.60)]={index % 2 !== 0}>
             {#if editingItemId === item.id}
-              <input type="number" bind:value={editedValues.amount} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
-              bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
-              rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover">
+              <input
+                type="number"
+                bind:value={editedValues.amount}
+                class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
+                       bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] 
+                       text-black dark:text-white rounded-md focus:ring-2 
+                       focus:ring-lightColor dark:focus:ring-darkHover"
+              >
             {:else}
               {item.amount}
             {/if}
           </td>
 
-          <td class="py-5 rounded-r-full"
+          <td class="px-3 py-3 sm:px-6 sm:py-5 rounded-r-full"
               class:bg-[rgba(213,147,209,0.28)]={index % 2 === 0}
               class:bg-[rgba(213,147,209,0.60)]={index % 2 !== 0}>
             {#if editingItemId === item.id}
-              <input type="date" bind:value={editedValues.expiration_date} class="w-full  text-sm border border-[rgba(191,80,183,0.4)] 
-              bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
-              rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover">
+              <input
+                type="date"
+                bind:value={editedValues.expiration_date}
+                class="w-full text-sm border border-[rgba(191,80,183,0.4)] 
+                       bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] 
+                       text-black dark:text-white rounded-md focus:ring-2 
+                       focus:ring-lightColor dark:focus:ring-darkHover"
+              >
             {:else}
               {formatDate(item.expiration_date)}
             {/if}
           </td>
 
-          <td class="px-4 py-3 flex gap-2 justify-center ">
+          <td class="px-2 py-3 flex gap-2 justify-center">
             {#if editingItemId === item.id}
-              <button on:click={() => editingItemId = null} class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
+              <button on:click={() => editingItemId = null}
+                class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
+                       dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 ✖
               </button>
-              <button on:click={() => handleUpdateItem(item)} class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
+              <button on:click={() => handleUpdateItem(item)}
+                class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
+                       dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 <img src="src/icons/notes/save.png" alt="Guardar" class="w-4 h-4" />
               </button>
             {:else}
-              <button on:click={() => enableEdit(item)} class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
+              <button on:click={() => enableEdit(item)}
+                class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
+                       dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 <img src="src/icons/notes/edit.svg" alt="Editar" class="w-4 h-4">
               </button>
-              <button on:click={() => handleDeleteItem({ detail: { itemId: item.id } })} class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] dark:bg-[#FF66A3]  hover:bg-gray-200 dark:hover:bg-darkHover">
+              <button on:click={() => handleDeleteItem({ detail: { itemId: item.id } })}
+                class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
+                       dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 <img src="src/icons/notes/delete.svg" alt="Eliminar" class="w-4 h-4">
               </button>
             {/if}
