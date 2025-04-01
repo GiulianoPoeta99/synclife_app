@@ -30,8 +30,9 @@ const currentPath = Astro.url.pathname;
           { href: '/stock', label: 'Stock', icon: 'inventory-box' },
           { href: '/reminders', label: 'Reminders', icon: 'check' },
           { href: '/notes', label: 'Notes', icon: 'pencil' },
-          { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
           { href: '/user', label: 'Account', icon: 'user' },
+          // { href: '/rutines', label: 'Rutines', icon: 'bookmark' },
+          
         ].map((item) => (
           <NavbarButton
             url={item.href}
