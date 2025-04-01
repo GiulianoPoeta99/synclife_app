@@ -109,3 +109,19 @@ export async function requestChangePassword(email: string) {
 
   return true;
 }
+
+export async function verifyAccount(validate_token: string) {
+  const response = await fetch(`${BASE_URL_U}/${validate_token}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    console.error('Error al verificar la cuenta:', response.status);
+    return false;
+  }
+
+  return true;
+}
