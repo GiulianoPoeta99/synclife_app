@@ -1,9 +1,6 @@
 import { BASE_URL_N } from './notes';
 export const BASE_URL_T = `${import.meta.env.PUBLIC_BASE_URL}/tag`;
 
-
-
-
 export async function getAllTags(sessionToken: string) {
   const response = await fetch(`${BASE_URL_T}/`, {
     method: 'GET',
@@ -30,7 +27,6 @@ export async function createTag(name: string, sessionToken: string) {
   return response.json();
 }
 
-
 export async function getTagById(tagId: string, sessionToken: string) {
   const response = await fetch(`${BASE_URL_T}/${tagId}`, {
     method: 'GET',
@@ -43,7 +39,6 @@ export async function getTagById(tagId: string, sessionToken: string) {
   const data = await response.json();
   return data.tag;
 }
-
 
 export async function deleteTag(tagId: string, sessionToken: string) {
   try {
@@ -81,7 +76,6 @@ export async function updateTag(
         'session-token': sessionToken,
       },
       body: JSON.stringify({ tag_uuid: tagId, name: newName }),
-      
     });
 
     if (!response.ok) {
@@ -100,7 +94,7 @@ export async function getNotesByTag(tagId: string, sessionToken: string) {
       method: 'GET',
       headers: {
         'session-token': sessionToken,
-      }
+      },
     });
 
     if (!response.ok) {
@@ -115,5 +109,3 @@ export async function getNotesByTag(tagId: string, sessionToken: string) {
     return [];
   }
 }
-
-

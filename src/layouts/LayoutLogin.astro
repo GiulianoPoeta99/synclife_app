@@ -11,7 +11,23 @@ const { title } = Astro.props;
 
 <!doctype html>
 <html lang="en">
-   <head>
+   <head>	
+      <script is:inline> // Este script arregla el FOUC
+      const tema = (() => {
+         if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+            return localStorage.getItem("theme");
+         }
+         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+         }
+         return "light";
+      })();
+      if (tema === "dark") {
+         document.documentElement.classList.add("dark");
+      } else {
+         document.documentElement.classList.remove("dark");
+      }
+   </script>
       <meta charset="UTF-8" />
       <meta name="description" content="Astro description" />
       <meta name="viewport" content="width=device-width" />
@@ -19,8 +35,8 @@ const { title } = Astro.props;
       <meta name="generator" content={Astro.generator} />
       <title>{title}</title>
    </head>
-   <body class="bg-gray-200 p-6 dark:bg-darkBg">
-      <div class="grid grid-rows-[auto,1fr] gap-6 h-[calc(100vh-4rem)]">
+   <body class="min-h-screen bg-white dark:bg-darkBg p-6">
+      <div class="grid grid-rows-[auto,1fr] gap-6 min-h-screen">
          <TitleBar />
          <main class="flex-grow">
             <Box>
@@ -28,7 +44,7 @@ const { title } = Astro.props;
             </Box>
          </main>
       </div>
-   </body>
+   </body>   
 </html>
 
 <style is:global>
@@ -45,7 +61,6 @@ const { title } = Astro.props;
    }
    html {
       font-family: system-ui, sans-serif;
-      background: #e8e9e8;
    }
    code {
       font-family:

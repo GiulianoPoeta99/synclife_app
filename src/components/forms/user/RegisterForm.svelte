@@ -1,4 +1,13 @@
 <script lang="ts">
+  import { tick } from 'svelte';
+  import { verifyAccount } from '../../../lib/users';
+
+
+  let showVerifySection = false;
+  let verificationToken = "";
+  let verificationMessage = "";
+
+
   interface FormData {
     email: string;
     password: string;
@@ -13,6 +22,7 @@
     message: string;
     data?: any;
     detail?: string;
+    session_token?: string;
   }
 
   let formData: FormData = {
@@ -59,64 +69,94 @@
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting) return;
+  if (isSubmitting) return;
 
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    isSubmitting = true;
-    errorMessages = {};
+  isSubmitting = true;
+  errorMessages = {};
 
-    try {
-      const payload: FormData = {
-        email: formData.email,
-        password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        birth_date: new Date(formData.birthDate).toISOString().split('T')[0],
-        phone: formData.phone,
-      };
+  try {
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      birth_date: new Date(formData.birthDate).toISOString().split('T')[0],
+      phone: formData.phone,
+    };
 
-      const response = await fetch(
-        'http://localhost:8000/api/users/register',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }
-      );
+    const response = await fetch('http://localhost:8000/api/users/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-      const responseData: ApiResponse = await response.json();
+    const responseData: ApiResponse = await response.json();
 
-      if (!response.ok) {
-        if (responseData.detail) {
-          errorMessages = { general: responseData.detail };
-        } else {
-          errorMessages = { general: 'Error durante el registro' };
-        }
-        return;
+    console.log("Respuesta del backend:", response.status, responseData);
+
+    if (response.ok) {
+      const sessionToken =
+        responseData.data?.session_token || responseData.session_token;
+
+      if (sessionToken) {
+        localStorage.setItem('session_token', sessionToken);
       }
 
-      if (responseData.data?.session_token) {
-        localStorage.setItem('session_token', responseData.data.session_token);
+      showVerifySection = true;
+      await tick();
+    } else {
+      if (responseData.detail) {
+        errorMessages = {
+          general: typeof responseData.detail === 'string'
+            ? responseData.detail
+            : JSON.stringify(responseData.detail),
+        };
+      } else {
+        errorMessages = {
+          general: `Error durante el registro (código ${response.status})`,
+        };
       }
-
-      window.location.href = '/';
-      formData = {
-        email: '',
-        password: '',
-        firstName: '',
-        lastName: '',
-        birthDate: '',
-        phone: '',
-      };
-    } catch (error) {
-      errorMessages = {
-        general: 'No se pudo registrar. Intenta nuevamente más tarde.',
-      };
-    } finally {
-      isSubmitting = false;
     }
+  } catch (error) {
+    console.error("Error de red o inesperado:", error);
+    errorMessages = {
+      general: 'No se pudo registrar. Intenta nuevamente más tarde.',
+    };
+  } finally {
+    isSubmitting = false;
+  }
+};
+
+
+
+
+  async function handleVerifyToken() {
+  if (!verificationToken.trim()) return;
+
+  const success = await verifyAccount(verificationToken);
+
+  if (success) {
+    verificationMessage = "¡Cuenta verificada correctamente! Ahora podés iniciar sesión.";
+
+    formData = {
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    phone: '',
   };
+
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+  } else {
+    verificationMessage = "Token inválido o expirado. Verificá tu email.";
+  }
+}
+
 </script>
 
 <form
@@ -124,7 +164,7 @@
   class="space-y-4 text-gray-800 max-w-md mx-auto dark:text-darkText"
 >
   <div>
-    <label for="email" class="block text-sm font-medium text-gray-800 dark:text-darkText"
+    <label for="email" class="block text-sm font-medium text-gray-800 dark:text-darkText "
       >Email</label
     >
     <input
@@ -136,13 +176,13 @@
       class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.email}
-      <span class="text-red-500 text-sm">{errorMessages.email}</span>
+      <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.email}</span>
     {/if}
   </div>
 
   <div>
-    <label for="password" class="block text-sm font-medium text-gray-800 dark:text-darkText"
-      >Contraseña</label
+    <label for="password" class="block text-sm font-medium text-gray-800 dark:text-darkText "
+      >Password</label  
     >
     <input
       id="password"
@@ -153,14 +193,14 @@
       class="w-full bg-white  dark:bg-darkBg  border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.password}
-      <span class="text-red-500 text-sm">{errorMessages.password}</span>
+      <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.password}</span>
     {/if}
   </div>
 
   <div class="flex gap-4">
     <div class="w-1/2">
-      <label for="firstName" class="block text-sm font-medium text-gray-800 dark:text-darkText"
-        >Nombre</label
+      <label for="firstName" class="block text-sm font-medium text-gray-800 dark:text-darkText "
+        >Name</label
       >
       <input
         id="firstName"
@@ -171,12 +211,12 @@
         class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
       />
       {#if errorMessages.firstName}
-        <span class="text-red-500 text-sm">{errorMessages.firstName}</span>
+        <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.firstName}</span>
       {/if}
     </div>
     <div class="w-1/2">
-      <label for="lastName" class="block text-sm font-medium text-gray-800 dark:text-darkText"
-        >Apellido</label
+      <label for="lastName" class="block text-sm font-medium text-gray-800 dark:text-darkText pl-1"
+        >Last name</label
       >
       <input
         id="lastName"
@@ -187,14 +227,14 @@
         class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
       />
       {#if errorMessages.lastName}
-        <span class="text-red-500 text-sm">{errorMessages.lastName}</span>
+        <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.lastName}</span>
       {/if}
     </div>
   </div>
 
   <div>
     <label for="birthDate" class="block text-sm font-medium text-gray-800 dark:text-darkText"
-      >Fecha de Nacimiento</label
+      >Birthdate</label
     >
     <input
       id="birthDate"
@@ -205,13 +245,13 @@
       class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.birthDate}
-      <span class="text-red-500 text-sm">{errorMessages.birthDate}</span>
+      <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.birthDate}</span>
     {/if}
   </div>
 
   <div>
     <label for="phone" class="block text-sm font-medium text-gray-800 dark:text-darkText"
-      >Teléfono</label
+      >Phone</label
     >
     <input
       id="phone"
@@ -222,12 +262,12 @@
       class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
     />
     {#if errorMessages.phone}
-      <span class="text-red-500 text-sm">{errorMessages.phone}</span>
+      <span class="text-red-500 dark:bg-darkContainer dark:text-white text-sm">{errorMessages.phone}</span>
     {/if}
   </div>
 
   {#if errorMessages.general}
-    <div class="text-red-500 text-center bg-red-100 p-2 rounded-lg dark:text-darkText">
+    <div class="text-red-500 text-center bg-red-100 p-2 rounded-lg dark:bg-darkContainer dark:text-white">
       {errorMessages.general}
     </div>
   {/if}
@@ -241,4 +281,34 @@
       {isSubmitting ? 'Sending...' : 'Send'}
     </button>
   </div>
+
+  {#if showVerifySection}
+  <div class="mt-6">
+    <label for="verificationToken" class="block text-sm font-medium text-gray-800 dark:text-darkText mb-1 pl-2">
+      Enter the token by sending it to your email
+    </label>
+    <input
+      id="verificationToken"
+      type="text"
+      bind:value={verificationToken}
+      placeholder="Token"
+      class="w-full bg-white dark:bg-darkBg border border-gray-400 rounded-3xl p-2 focus:outline-none focus:ring-2 focus:ring-[#D593D1]"
+    />
+
+    <button
+      type="button"
+      on:click={handleVerifyToken}
+      class="mt-3 w-full bg-[#ECE6F0] text-[#65558F] dark:bg-darkHover dark:text-white py-2 px-6 rounded-2xl shadow-md hover:bg-[#b76aaf] transition-all"
+    >
+      Enter token
+    </button>
+
+    {#if verificationMessage}
+      <p class="mt-2 text-sm text-center text-green-600 dark:text-green-400">
+        {verificationMessage}
+      </p>
+    {/if}
+  </div>
+{/if}
+
 </form>
