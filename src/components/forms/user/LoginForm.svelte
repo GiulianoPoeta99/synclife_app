@@ -68,6 +68,13 @@
         return;
       }
 
+      if (!responseData.user?.account_verified) {
+        errorMessages = {
+          general: 'Tu cuenta aún no ha sido verificada. Por favor, revisá tu correo.',
+        };
+        return;
+      }
+
       if (responseData.session_token) {
         localStorage.setItem('session_token', responseData.session_token);
       }

@@ -1,8 +1,8 @@
 ---
-import Account from '../../components/Account.astro';
 import Layout from '../../layouts/Layout.astro';
+import Account from '../../components/Account.svelte';
 ---
 
 <Layout title="Account">
-   <Account />
+   <Account client:load/>
 </Layout>

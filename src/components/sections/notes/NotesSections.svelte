@@ -1,5 +1,5 @@
 <script lang="ts">
-import { tick } from "svelte";
+import { onMount, tick } from "svelte";
 import { createNote, updateNote, deleteNote, linkNoteToTag } from "../../../lib/notes";
 import { getAllTags, createTag, deleteTag, updateTag, getNotesByTag } from "../../../lib/tags";
 import SectionCard from "./SectionCard.svelte";
@@ -12,6 +12,8 @@ let sessionToken = "";
 let userId = "";
 let editingSectionId: string | null = null;
 let editedSectionName = "";
+
+
 
 async function getSessionData() {
     if (typeof window !== "undefined") {
@@ -284,87 +286,119 @@ async function saveSectionEdit(sectionId: string) {
   await handleUpdateTag(sectionId, editedSectionName);
 }
 
-
-
-
-
 function previousSection() {
-    startIndex = Math.max(0, startIndex - 1);
+  if (startIndex > 0) {
+    startIndex -= 1;
+  }
 }
 
 function nextSection() {
-    startIndex = Math.min(sections.length - visibleSections, startIndex + 1);
+  if (startIndex + visibleSections < sections.length) {
+    startIndex += 1;
+  }
 }
 
+function updateVisibleSections() {
+  if (typeof window !== 'undefined') {
+    visibleSections = window.innerWidth < 640 ? 2 : 4;
+  }
+}
+
+onMount(() => {
+  updateVisibleSections();
+  window.addEventListener('resize', updateVisibleSections);
+  return () => window.removeEventListener('resize', updateVisibleSections);
+});
+
 </script>
+
+
 
 <style>
 </style>
   
-  <div class="flex flex-col items-center w-full px-4 mt-4 mb-16">
+<!-- Botones en mobile -->
+<div class="w-full px-4 mt-4 sm:hidden flex justify-between mb-4">
+  <button on:click={handleCreateNote}
+    class="p-3 rounded-lg shadow-md text-sm
+    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
+    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
+    + New note
+  </button>
 
-    <button on:click={handleCreateNote} class="pr-7 pl-7 pt-3 pb-3 rounded-lg shadow-md text-xl absolute left-60
-    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white transition-all duration-200 ease-in-out 
-    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105">
-      +
+  <button on:click={handleCreateTag}
+    class="p-3 rounded-lg shadow-md text-sm
+    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
+    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
+    + New Tag
+  </button>
+</div>
+
+
+<div class="flex items-center w-full px-4  mb-4 relative">
+
+  <!-- Botones en escritorio -->
+  <button on:click={handleCreateNote}
+    class="hidden sm:block absolute left-0
+    p-3 rounded-lg shadow-md text-lg
+    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
+    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
+    + New note
+  </button>
+
+  <button on:click={handleCreateTag}
+    class="hidden sm:block absolute right-0
+    p-3 rounded-lg shadow-md text-lg
+    bg-[#ECE6F0] text-[#65558F] dark:bg-[rgba(50,50,50,0.9)] dark:text-white
+    hover:bg-[#d3c8e0] dark:hover:bg-darkHover hover:scale-105 transition-all duration-200 ease-in-out">
+    + New Tag
+  </button>
+
+  <!-- Flechas y secciones -->
+  <div class="mx-auto flex items-center space-x-4 sm:space-x-6 overflow-x-auto sm:overflow-visible px-2">
+    <button on:click={previousSection} class="text-black dark:text-white text-xl">
+      &#9664;
     </button>
-  
-    <div class="flex items-center space-x-14">
-      <button on:click={previousSection} class="p-1 text-black dark:text-white text-xl">
-        &#9664;
-      </button>
-  
-      {#each sections.slice(startIndex, startIndex + visibleSections) as section, index}
-        {#if editingSectionId === section.id}
-          <!-- svelte-ignore a11y_autofocus -->
-          <input
-            type="text"
-            bind:value={editedSectionName}
-            class="border-none px-4 py-2 rounded-full text-lg outline-none bg-[rgba(231,222,222,1)]
-            dark:bg-[rgba(50,50,50,0.9)] dark:text-white"
-            on:blur={() => saveSectionEdit(section.id)} 
-            on:keydown={(e) => { 
-                if (e.key === 'Enter') {
-                e.preventDefault();
-                saveSectionEdit(section.id);
-                }
-            }}
-            autofocus
-          />
-        {:else}
+
+    {#each sections.slice(startIndex, startIndex + visibleSections) as section, index}
+      {#if editingSectionId === section.id}
+        <!-- svelte-ignore a11y_autofocus -->
+        <input
+          type="text"
+          bind:value={editedSectionName}
+          class="border-none px-4 py-2 rounded-full text-lg outline-none bg-[rgba(231,222,222,1)]
+          dark:bg-[rgba(50,50,50,0.9)] dark:text-white"
+          on:blur={() => saveSectionEdit(section.id)} 
+          on:keydown={(e) => { 
+              if (e.key === 'Enter') {
+              e.preventDefault();
+              saveSectionEdit(section.id);
+              }
+          }}
+          autofocus
+        />
+      {:else}
         <button 
-            class="px-5 py-2 rounded-full shadow-md font-bold text-black dark:text-white transition-colors duration-200 
-            bg-[rgba(231,222,222,1)] dark:bg-[rgba(50,50,50,0.9)] hover:bg-[rgba(213,147,209,0.6)]
-            dark:hover:bg-darkHover"
-
-            class:bg-[rgba(213,147,209,0.87)]={index + startIndex === activeSectionIndex}  
-            class:dark:bg-darkHover={index + startIndex === activeSectionIndex}  
-            class:text-white={index + startIndex === activeSectionIndex}
-
-            on:dblclick={() => startEditingSection(section.id, section.sectionTitle)}
-            on:click={() => activeSectionIndex = index + startIndex}>
-            {section.sectionTitle}
+          class="px-5 py-2 rounded-full shadow-md font-bold text-black dark:text-white transition-colors duration-200 
+          bg-[rgba(231,222,222,1)] dark:bg-[rgba(50,50,50,0.9)] hover:bg-[rgba(213,147,209,0.6)]
+          dark:hover:bg-darkHover whitespace-nowrap
+          {index + startIndex === activeSectionIndex ? 'bg-[rgba(213,147,209,0.87)] dark:bg-darkHover text-white' : ''}"
+          on:dblclick={() => startEditingSection(section.id, section.sectionTitle)}
+          on:click={() => activeSectionIndex = index + startIndex}>
+          {section.sectionTitle}
         </button>
+      {/if}
+    {/each}
 
-
-
-        {/if}
-      {/each}
-  
-      <button on:click={nextSection} class="p-1 text-black dark:text-white text-xl">
-        &#9654;
-      </button>
-    </div>
-  
-    <button on:click={handleCreateTag} class="p-3 rounded-lg shadow-md absolute right-20 transition-all duration-200 ease-in-out
-    bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.9)] text-[#65558F] dark:text-white hover:bg-[#d3c8e0] 
-    dark:hover:bg-darkHover hover:scale-105">
-      + New Tag
+    <button on:click={nextSection} class="text-black dark:text-white text-xl">
+      &#9654;
     </button>
   </div>
+</div>
+
   
   {#if sections.length > 0 && sections[activeSectionIndex]}
-    <div class="max-h-[440px] overflow-y-auto grid grid-cols-3 gap-2 p-2 justify-items-center">
+    <div class="max-h-[440px] overflow-y-auto grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 justify-items-center">
       {#each sections[activeSectionIndex].notes as note}
         <SectionCard notes={[note]} on:deleteNote={handleDeleteNote} on:updateNote={handleUpdateNote} />
       {/each}

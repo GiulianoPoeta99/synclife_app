@@ -1,32 +1,32 @@
 ---
 import Navbar from '../components/navbar/Navbar.astro';
 import Box from '../components/Box.astro';
+
 interface Props {
 	title: string;
 }
-
 const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark h-full w-full">
 	<head>
-		<script is:inline> // Este script soluciona el FOUC(parpadea el tema cuando se cambia)
+		<script is:inline>
 			const tema = (() => {
-			  if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
-				return localStorage.getItem("theme");
-			  }
-			  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-				return "dark";
-			  }
-			  return "light";
+				if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+					return localStorage.getItem("theme");
+				}
+				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+					return "dark";
+				}
+				return "light";
 			})();
 			if (tema === "dark") {
-			  document.documentElement.classList.add("dark");
+				document.documentElement.classList.add("dark");
 			} else {
-			  document.documentElement.classList.remove("dark");
+				document.documentElement.classList.remove("dark");
 			}
-		  </script>
+		</script>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
@@ -34,10 +34,14 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-gray-200 p-6 dark:bg-darkBg	">
-		<div class="grid grid-cols-[auto,1fr] gap-6 h-[calc(100vh-4rem)]">
+
+	<body class="min-h-screen w-full bg-gray-200 p-6 dark:bg-darkBg relative">
+		
+		<div id="backdrop" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden sm:hidden"></div>
+		
+		<div class="min-h-screen grid grid-cols-1 sm:grid-cols-[auto,1fr] gap-6">
 			<Navbar />
-			<main>
+			<main class="w-full">
 				<Box title={title}>
 					<slot />
 				</Box>
@@ -53,16 +57,13 @@ const { title } = Astro.props;
 					return;
 				}
 
-				const response = await fetch(
-					'http://localhost:8000/api/check/validate-session',
-					{
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json',
-							'session-token': sessionToken,
-						},
-					}
-				);
+				const response = await fetch('http://localhost:8000/api/check/validate-session', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'session-token': sessionToken,
+					},
+				});
 
 				if (!response.ok) {
 					if (response.status === 401) {
@@ -70,10 +71,7 @@ const { title } = Astro.props;
 						localStorage.removeItem('session_token');
 						redirectToLogin();
 					} else {
-						console.error(
-							'Error al validar la sesión, código:',
-							response.status
-						);
+						console.error('Error al validar la sesión, código:', response.status);
 					}
 				} else {
 					const data = await response.json();
@@ -85,25 +83,39 @@ const { title } = Astro.props;
 				window.location.href = '/login';
 			}
 
-	
-			(function() {
-			const savedTheme = localStorage.getItem("theme");
-			if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-				document.documentElement.classList.add("dark");
-				document.documentElement.classList.remove("light");
-			} else {
-				document.documentElement.classList.add("light");
-				document.documentElement.classList.remove("dark");
-			}
+			(function () {
+				const savedTheme = localStorage.getItem("theme");
+				if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+					document.documentElement.classList.add("dark");
+					document.documentElement.classList.remove("light");
+				} else {
+					document.documentElement.classList.add("light");
+					document.documentElement.classList.remove("dark");
+				}
 			})();
 
-			
-
-			// Validación inicial
 			validateSession();
-
-			// Validar la sesión cada 60 segundos
 			setInterval(validateSession, 60000);
+
+			window.addEventListener('DOMContentLoaded', () => {
+				const navbar = document.getElementById('navbar');
+				const hamburgerBtn = document.getElementById('hamburger-btn');
+				const backdrop = document.getElementById('backdrop');
+
+				document.addEventListener('mousedown', (event) => {
+					const target = event.target as Node;
+					if (
+						window.innerWidth < 640 &&
+						navbar?.classList.contains('-translate-x-full') === false &&
+						!navbar?.contains(target) &&
+						!hamburgerBtn?.contains(target)
+					) {
+						navbar?.classList.add('-translate-x-full');
+						backdrop?.classList.add('hidden');
+						hamburgerBtn?.classList.remove('hidden');
+					}
+				});
+			});
 		</script>
 	</body>
 </html>
@@ -122,27 +134,13 @@ const { title } = Astro.props;
 	}
 
 	nav a {
-	color: #333 !important;
+		color: #333 !important;
 	}
 	.dark nav a {
-	color: #F5F5F5 !important;
+		color: #F5F5F5 !important;
 	}
 
-
-	html {
+	html, body {
 		font-family: system-ui, sans-serif;
-		background: #e8e9e8;
-	}
-
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
 	}
 </style>
