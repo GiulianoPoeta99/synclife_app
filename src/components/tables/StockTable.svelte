@@ -15,6 +15,8 @@ let searchQuery = "";
 let editingItemId: string | null = null;
 let editedValues = { product_name: "", amount: 0, expiration_date: "" };
 let filteredInventoryList = [];
+let showDeleteModal = false;
+let itemToDelete: string | null = null;
 
 $: filteredInventoryList = [...(searchQuery
     ? inventory.filter(item => item.product_name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -113,9 +115,6 @@ async function handleCreateItem() {
 
 async function handleDeleteItem(event) {
     const itemId = event.detail.itemId;
-
-    if (!confirm("Are you sure you want to delete this item?")) return;
-
     try {
         const response = await deleteInventoryItem(itemId, sessionToken);
 
@@ -175,6 +174,12 @@ function enableEdit(item) {
         expiration_date: item.expiration_date 
     };
 }
+
+function confirmDelete(itemId: string) {
+  itemToDelete = itemId;
+  showDeleteModal = true;
+}
+
 
 
 function getTomorrowDate(): string {
@@ -283,7 +288,7 @@ function formatDate(dateString: string): string {
               <input
                 type="date"
                 bind:value={editedValues.expiration_date}
-                class="w-full text-sm border border-[rgba(191,80,183,0.4)] 
+                class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
                        bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] 
                        text-black dark:text-white rounded-md focus:ring-2 
                        focus:ring-lightColor dark:focus:ring-darkHover"
@@ -311,7 +316,7 @@ function formatDate(dateString: string): string {
                        dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 <img src="src/icons/notes/edit.svg" alt="Editar" class="w-4 h-4">
               </button>
-              <button on:click={() => handleDeleteItem({ detail: { itemId: item.id } })}
+              <button on:click={() => confirmDelete(item.id)}
                 class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
                        dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                 <img src="src/icons/notes/delete.svg" alt="Eliminar" class="w-4 h-4">
@@ -322,6 +327,40 @@ function formatDate(dateString: string): string {
       {/each}
     </tbody>
   </table>
+  {#if showDeleteModal}
+  <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="w-full max-w-[90%] sm:max-w-md bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.95)] text-[#65558F] dark:text-white p-6 rounded-2xl shadow-xl border border-[#d3c8e0] dark:border-[#444]">
+
+      <h2 class="text-xl font-bold text-center mb-4">Do you want to delete the item?</h2>
+      <p class="text-center text-sm mb-6 text-[#65558F] dark:text-gray-300">Esta acción no se puede deshacer.</p>
+
+      <div class="flex justify-between gap-4">
+        <button
+          on:click={() => {
+            showDeleteModal = false;
+            itemToDelete = null;
+          }}
+          class="flex-1 bg-[#ECE6F0] dark:bg-[rgba(255,255,255,0.1)] text-[#65558F] dark:text-white px-4 py-2 rounded-full shadow-md hover:bg-[#d3c8e0] dark:hover:bg-darkHover transition"
+        >
+          Cancel
+        </button>
+
+        <button
+          on:click={async () => {
+            if (itemToDelete) {
+              await handleDeleteItem({ detail: { itemId: itemToDelete } });
+              showDeleteModal = false;
+              itemToDelete = null;
+            }
+          }}
+          class="flex-1 bg-[#FF66A3] hover:bg-[#e05591] text-white px-4 py-2 rounded-full shadow-md transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 </div>
 
 

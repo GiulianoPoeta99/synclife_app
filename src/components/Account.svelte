@@ -23,6 +23,7 @@
     let repeatPassword = "";
     let token = "";
     let showSavePassword = false;
+    let showDeleteModal = false;
   
     onMount(async () => {
       sessionToken = localStorage.getItem("session_token") || "";
@@ -82,8 +83,6 @@
     }
   
     async function handleDeleteAccount() {
-      if (!confirm("¿Estás seguro de eliminar tu cuenta? Esta acción es irreversible.")) return;
-  
       const success = await deleteUser(sessionToken);
       if (success) {
         localStorage.removeItem("session_token");
@@ -91,6 +90,21 @@
         window.location.href = "/login";
       }
     }
+
+    function formatDate(dateString: string): string {
+      const [year, month, day] = dateString.split('-').map(Number);
+      const localDate = new Date(year, month - 1, day); // <-- Sin UTC
+      return localDate.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+  });
+
+  function confirmDelete(reminderId: string) {
+  showDeleteModal = true;
+  }
+}
+
   </script>
   
   <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6">
@@ -115,7 +129,7 @@
             </button>
           {:else}
             <div class="bg-pink-200 text-black px-4 py-2 rounded-full dark:bg-[rgba(255,255,255,0.1)] dark:text-white w-full sm:w-auto">
-              {value}
+              {field == 'birth_date' ? formatDate(value as string) : value}
             </div>
             <button
               on:click={() => isEditing[field] = true}
@@ -162,14 +176,50 @@
 
 
         <div class="mt-16">
-        <button on:click={handleDeleteAccount}
-            class="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow-md w-full sm:w-auto">
-            DELETE ACCOUNT
+          <button on:click={() => {
+            showDeleteModal = true;
+          }}
+          class="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow-md w-full sm:w-auto">
+          DELETE ACCOUNT
         </button>
+        
         </div>
 
     {:else}
       <p class="text-center text-gray-500 dark:text-gray-300">Loading user data...</p>
     {/if}
+
+    {#if showDeleteModal}
+    <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+      <div class="w-full max-w-[90%] sm:max-w-md bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.95)] text-[#65558F] dark:text-white p-6 rounded-2xl shadow-xl border border-[#d3c8e0] dark:border-[#444]">
+  
+        <h2 class="text-xl font-bold text-center mb-4">Do you want to delete the user?</h2>
+        <p class="text-center text-sm mb-6 text-[#65558F] dark:text-gray-300">Esta acción no se puede deshacer.</p>
+  
+        <div class="flex justify-between gap-4">
+          <button
+            on:click={() => {
+              showDeleteModal = false;
+            }}
+            class="flex-1 bg-[#ECE6F0] dark:bg-[rgba(255,255,255,0.1)] text-[#65558F] dark:text-white px-4 py-2 rounded-full shadow-md hover:bg-[#d3c8e0] dark:hover:bg-darkHover transition"
+          >
+            Cancel
+          </button>
+  
+          <button
+            on:click={async () => {
+                await handleDeleteAccount();  
+                showDeleteModal = false;
+            }}
+            class="flex-1 bg-[#FF66A3] hover:bg-[#e05591] text-white px-4 py-2 rounded-full shadow-md transition"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+        
+
   </div>
   

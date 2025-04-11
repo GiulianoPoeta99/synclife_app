@@ -90,7 +90,7 @@ async function handleCreateNote() {
 
   const baseTitle = "New Note";
   let title = baseTitle;
-  let content = "Write here...";
+  let content = "\u200B";
   let counter = 1;
   let createdNote = null;
 

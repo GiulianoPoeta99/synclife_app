@@ -13,6 +13,9 @@
   let searchQuery = "";
   let editingReminderId: string | null = null;
   let editedValues = { title: "", remind_date: "" };
+  let showDeleteModal = false;
+  let reminderToDelete: string | null = null;
+
   
   $: filteredReminders = [...(searchQuery
     ? reminders.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -92,17 +95,21 @@
   }
   
   async function handleDeleteReminder(reminderId: string) {
-    if (!confirm("Are you sure you want to delete this reminder?")) return;
-  
-    try {
-      const result = await deleteReminder(reminderId, sessionToken);
-      if (!result) return;
-  
-      reminders = reminders.filter(r => r.id !== reminderId);
-      await tick();
-    } catch (error) {
-      console.error("Error al eliminar el recordatorio:", error);
-    }
+  try {
+    const result = await deleteReminder(reminderId, sessionToken);
+    if (!result) return;
+
+    reminders = reminders.filter(r => r.id !== reminderId);
+    await tick();
+  } catch (error) {
+    console.error("Error al eliminar el recordatorio:", error);
+  }
+}
+
+
+  function confirmDelete(reminderId: string) {
+  reminderToDelete = reminderId;
+  showDeleteModal = true;
   }
   
   function getTomorrowDate(): string {
@@ -207,7 +214,7 @@
                          dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                   <img src="src/icons/notes/edit.svg" alt="Editar" class="w-4 h-4" />
                 </button>
-                <button on:click={() => handleDeleteReminder(reminder.id)}
+                <button on:click={() => confirmDelete(reminder.id)}
                   class="p-2 rounded-full shadow-md bg-[rgba(191,80,183,0.17)] 
                          dark:bg-[#FF66A3] hover:bg-gray-200 dark:hover:bg-darkHover">
                   <img src="src/icons/notes/delete.svg" alt="Eliminar" class="w-4 h-4" />
@@ -218,5 +225,40 @@
         {/each}
       </tbody>
     </table>
+    {#if showDeleteModal}
+  <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="w-full max-w-[90%] sm:max-w-md bg-[#ECE6F0] dark:bg-[rgba(50,50,50,0.95)] text-[#65558F] dark:text-white p-6 rounded-2xl shadow-xl border border-[#d3c8e0] dark:border-[#444]">
+
+      <h2 class="text-xl font-bold text-center mb-4">Do you want to delete the reminder?</h2>
+      <p class="text-center text-sm mb-6 text-[#65558F] dark:text-gray-300">Esta acción no se puede deshacer.</p>
+
+      <div class="flex justify-between gap-4">
+        <button
+          on:click={() => {
+            showDeleteModal = false;
+            reminderToDelete = null;
+          }}
+          class="flex-1 bg-[#ECE6F0] dark:bg-[rgba(255,255,255,0.1)] text-[#65558F] dark:text-white px-4 py-2 rounded-full shadow-md hover:bg-[#d3c8e0] dark:hover:bg-darkHover transition"
+        >
+          Cancel
+        </button>
+
+        <button
+          on:click={async () => {
+            if (reminderToDelete) {
+              await handleDeleteReminder(reminderToDelete);
+              showDeleteModal = false;
+              reminderToDelete = null;
+            }
+          }}
+          class="flex-1 bg-[#FF66A3] hover:bg-[#e05591] text-white px-4 py-2 rounded-full shadow-md transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
   </div>
   
