@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let title: string;
   export let content: string;
@@ -12,13 +12,14 @@
   const dispatch = createEventDispatcher();
 
   function toggleEdit() {
-    isEditing = !isEditing;
+  isEditing = !isEditing;
 
-    if (isEditing) {
-      editedTitle = title;
-      editedContent = content;
-    }
+  if (isEditing) {
+    editedTitle = title;
+    editedContent = content === "\u200B" ? "" : content;
   }
+}
+
 
   function saveChanges() {
     isEditing = false;
@@ -65,9 +66,13 @@
       <input type="text" bind:value={editedTitle} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
         bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
         rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover">
-      <textarea bind:value={editedContent} class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
-        bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
-        rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover max-h-20"></textarea>
+        <textarea
+        bind:value={editedContent}
+        placeholder="Write here..."
+        class="w-full p-2 text-sm border border-[rgba(191,80,183,0.4)] 
+               bg-[rgba(213,147,209,0.28)] dark:bg-[rgba(50,50,50,0.8)] text-black dark:text-white 
+               rounded-md focus:ring-2 focus:ring-lightColor dark:focus:ring-darkHover max-h-20">
+      </textarea>
       <button on:click={saveChanges} class="w-7 h-7 flex items-center justify-center 
         rounded-md bg-[rgba(191,80,183,0.17)] dark:bg-[rgba(100,100,100,0.5)]
         transition-colors duration-200 hover:bg-[rgba(191,80,183,0.35)] dark:hover:bg-[rgba(150,150,150,0.5)]">
